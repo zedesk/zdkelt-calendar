@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>zdk-Calendar demo page</title>
+
+        <script src="/bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+        <link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout.html">
+        <link rel="import" href="../zdk-calendar.html">
+        <style>
+        body {
+            font-family: Verdana, Arial;
+        }
+        .cell {
+            padding: 10px;
+        }
+        .cell > div {
+            line-height: 30px;
+        }
+        .value {
+            font-weight:bold;
+        }
+        label { display:inline-block; min-width:150px; }
+        input { font-size: inherit; }
+        </style>
+    </head>
+    <body>
+
+    <style is="custom-style">
+    zdk-calendar.demo {
+        --zdk-calendar-select: {
+            background: dodgerblue;
+            color: white;
+        };
+
+        --zdk-calendar-week: {
+            background: white;
+            color:black;
+        };
+
+        --zdk-calendar-weekend: {
+            background: PowderBlue;
+        };
+
+        --zdk-calendar-notinmonth: {
+            color:Gainsboro;
+        }
+
+        --zdk-calendar-title: {
+            background: SteelBlue;
+            color: white;
+            font-size:110%;
+        };
+
+        --zdk-calendar-today: {
+            background: Aquamarine;
+        };
+
+        --zdk-calendar-weekdays: {
+            background: CornflowerBlue;
+            color:white;
+        };
+
+        --zdk-calendar-action: {
+            background:Navy;
+        };
+    }
+    </style>
+
+    <h3>The default component</h3>
+
+    <div class="layout horizontal">
+        <div class="cell">
+            <zdk-calendar id="cal"></zdk-calendar>
+        </div>
+        <div class="cell">
+            <div>
+                selected value : <span class="value"></span>
+            </div>
+            <div>
+                <label for="init-date">initial Date</label>
+                <input type="text" name="init-date" value="" onchange="calApply(this)">
+            </div>
+            <div>
+                <label for="i18n">i18n</label>
+                <input type="text" name="i18n" value="" onchange="calApply(this)">
+                <br/>to get locale code refer to : <a href="http://www.science.co.il/Language/Locale-codes.asp">Locale Codes</a>
+            </div>
+        </div>
+    </div>
+    <script>
+    var cal = document.querySelector("#cal");
+    cal.addEventListener("change", function(evt) {
+        document.querySelector(".value").innerHTML = cal.value;
+    });
+    function calApply(elt) {
+        cal.setAttribute(elt.name,elt.value);
+    }
+    </script>
+
+    <h3>A stylished component</h3>
+    <zdk-calendar class="demo" style="width:250px;height:250px"></zdk-calendar>
+
+    </body>
+</html>
