@@ -60,14 +60,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             test('i18n french', function(done) {
                 var cal = fixture('basic');
                 cal.i18n = "fr";
-                cal.addEventListener('calendar-ready', function() {
-                    var spans = cal.querySelectorAll('.title .dateTitle > div > span');
-                    assert.equal(spans[0].innerHTML,'sept.');
-                    assert.equal(spans[1].innerHTML,'2015');
-                    // var divs = cal.querySelectorAll('.weekdays > div');
-                    // assert.equal(divs[0].innerHTML, 'Lu');
-                    done();
-                });
+                var spans = cal.querySelectorAll('.title .dateTitle > div > span');
+                assert.equal(spans[0].innerHTML,'sept.');
+                assert.equal(spans[1].innerHTML,'2015');
+                // var divs = cal.querySelectorAll('.weekdays > div');
+                // assert.equal(divs[0].innerHTML, 'Lu');
+                done();
             });
 
             test('i18n en', function(done) {
