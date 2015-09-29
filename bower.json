@@ -1,6 +1,6 @@
 {
   "name": "zdkelt-calendar",
-  "version": "1.0.0",
+  "version": "1.0.0-rc2",
   "description": "A date picker",
   "authors": [
     "zeDesk <dev@zedesk.net>"
@@ -22,8 +22,7 @@
   "homepage": "https://github.com/PolymerElements/paper-card",
   "ignore": [
     "/test/",
-    "/demo/",
-    "hero.png"
+    "/demo/"
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#^1.1.0",

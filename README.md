@@ -12,6 +12,8 @@ Example:
 
 ![zdk-calendar](hero.png)
 
+to view a demo and have the component doc : [zdkelt-calendar](http://zedesk.github.io/zdkelt-calendar)
+
 ### Install
 
 to install it in tout project
@@ -19,6 +21,8 @@ to install it in tout project
     npm install zdkelt-calendar --save
 
 The component is based on Polymer v1.1.0
+
+
 
 
 ### Styling
