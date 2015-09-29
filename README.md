@@ -1,5 +1,5 @@
-% zdkelt-calendar
-% zedesk <dev@zedesk.net>
+% zdkelt-calendar  
+% zedesk <dev@zedesk.net>  
 % September 2015
 
 # zdkelt-calendar
@@ -11,6 +11,15 @@ Example:
     <zdkelt-calendar i18n="fr" init-date="2015-12-25"></zdkelt-calendar>
 
 ![zdk-calendar](hero.png)
+
+### Install
+
+to install it in tout project
+
+    npm install zdkelt-calendar --save
+
+The component is based on Polymer v1.1.0
+
 
 ### Styling
 
