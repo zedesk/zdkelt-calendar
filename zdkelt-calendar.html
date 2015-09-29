@@ -1,0 +1,514 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../paper-ripple/paper-ripple.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icons/image-icons.html">
+<link rel="import" href="../paper-dialog/paper-dialog.html">
+<link rel="import" href="../neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../neon-animation/animations/fade-out-animation.html">
+<script src="../moment/min/moment-with-locales.min.js" charset="utf-8"></script>
+
+<!--
+A calendar component, which could be used as date-picker
+
+Example:
+
+    <zdkelt-calendar i18n="fr" init-date="2015-12-25"></zdkelt-calendar>
+
+![zdk-calendar](hero.png)
+
+### Styling
+
+Custom property             | Description
+----------------------------|----------------------
+`--zdk-calendar-select`     | style of the selected date
+`--zdk-calendar-week`       | background color of the calendar
+`--zdk-calendar-weekend`    | background color for week-end days
+`--zdk-calendar-notinmonth` | style for days not in the current month
+`--zdk-calendar-title`      | style of date title bar
+`--zdk-calendar-weekdays`   | style of the week days name
+`--zdk-calendar-today`      | style of the today date
+
+@group zdk Elements
+@demo
+-->
+
+<style is="custom-style">
+    zdkelt-calendar {
+        --zdk-calendar-select: {
+            background: tomato;
+            color: white;
+        }
+        ;
+        --zdk-calendar-week: {
+            background: white;
+            color: black;
+        }
+        ;
+        --zdk-calendar-weekend: {
+            background: LemonChiffon;
+        }
+        ;
+        --zdk-calendar-notinmonth: {
+            color: Gainsboro;
+        }
+        --zdk-calendar-title: {
+            background: crimson;
+            color: white;
+            font-size: 110%;
+        }
+        ;
+        --zdk-calendar-weekdays: {
+            background: Khaki;
+            font-weight: bold;
+        }
+        ;
+        --zdk-calendar-today: {
+            background: rgba(30, 144, 255, 0.5);
+            border-radius: 100%;
+        }
+        ;
+        --zdk-calendar-action: {
+            background: DarkRed;
+            color: white;
+        }
+        ;
+    }
+</style>
+
+<dom-module id="zdkelt-calendar">
+    <style>
+        :host {
+            display: block;
+            box-sizing: border-box;
+            width: 300px;
+            height: 300px;
+            border: 1px solid gainsboro;
+        }
+
+        .zdkCal {
+            position: relative;
+            font-family: roboto;
+            height: 100%;
+            @apply(--layout-vertical);
+        }
+
+        .week {
+            width: 100%;
+            @apply(--zdk-calendar-week);
+            @apply(--layout-flex);
+            @apply(--layout-horizontal);
+        }
+
+        .weekdays {
+            @apply(--zdk-calendar-weekdays);
+        }
+
+        .day {
+            position: relative;
+            text-align: center;
+            @apply(--layout-flex);
+            @apply(--layout-vertical);
+        }
+
+        .we {
+            @apply(--zdk-calendar-weekend);
+        }
+
+        .nm {
+            @apply(--zdk-calendar-notinmonth);
+        }
+
+        .today > div {
+            @apply(--zdk-calendar-today);
+        }
+
+        .disabled {
+            background: lightgray;
+        }
+
+        .day > div {
+            @apply(--layout-flex);
+            @apply(--layout-vertical);
+            border-radius: 100%;
+        }
+
+        .day:hover > div {
+            background: lightgray;
+            color: black;
+        }
+
+        .day.select > div,
+        .day.select:hover > div {
+            @apply(--zdk-calendar-select);
+        }
+
+        .action {
+            position: relative;
+            margin: 2px 1px;
+            border-radius: 100%;
+            @apply(--zdk-calendar-action);
+            @apply(--layout-flex);
+            @apply(--layout-vertical);
+            @apply(--layout-center);
+        }
+
+        .action iron-icon {
+            width: 50%;
+            height: 50%;
+        }
+
+        .size-position {
+            position: absolute !important;
+            top: 10px;
+            right: 10px;
+            margin: 0px;
+            height: 200px;
+            width: 150px;
+        }
+
+        .years div {
+            line-height: 45px;
+            font-size: 25px;
+            text-align: center;
+        }
+
+        .years paper-ripple {
+            color: tomato;
+        }
+
+        .dateTitle {
+            text-align: center;
+            font-weight: bold;
+            flex: 5;
+            @apply(--layout-vertical);
+        }
+
+        .title {
+            @apply(--zdk-calendar-title);
+            @apply(--layout-flex);
+            @apply(--layout-horizontal);
+        }
+
+        .spacer {
+            flex: 1
+        }
+    </style>
+
+    <template>
+        <div class="zdkCal">
+            <div class="title">
+                <div class="action" id="prevMonth" on-tap="_prevMonth">
+                    <span class="spacer"></span>
+                    <iron-icon icon="arrow-back"></iron-icon>
+                    <span class="spacer"></span>
+                    <paper-ripple></paper-ripple>
+                </div>
+                <div class="action" id="currentMonth" on-tap="_goToday">
+                    <span class="spacer"></span>
+                    <iron-icon icon="image:brightness-1"></iron-icon>
+                    <span class="spacer"></span>
+                    <paper-ripple></paper-ripple>
+                </div>
+                <div class="action" id="nextMonth" on-tap="_nextMonth">
+                    <span class="spacer"></span>
+                    <iron-icon icon="arrow-forward"></iron-icon>
+                    <span class="spacer"></span>
+                    <paper-ripple></paper-ripple>
+                </div>
+                <div class="dateTitle" on-tap="_showYears">
+                    <span class="spacer"></span>
+                    <div>
+                        <span>{{_month}}</span>
+                        <span>{{_year}}</span>
+                    </div>
+                    <span class="spacer"></span>
+                </div>
+            </div>
+            <div class="week weekdays">
+                <template is="dom-repeat" items="{{_weekDays}}" as="weekday">
+                    <div class="day">
+                        <span class="spacer"></span>
+                        <span>{{weekday}}</span>
+                        <span class="spacer"></span>
+                    </div>
+                </template>
+            </div>
+            <template is="dom-repeat" items="{{_weeks}}" as="week">
+                <div class="week">
+                    <template is="dom-repeat" items="{{week.days}}" as="item">
+                        <div class$="{{item.class}}" data-date$="{{item.dateStr}}" on-tap="_selectDate">
+                            <div>
+                                <span class="spacer"></span>
+                                <span>{{item.day}}</span>
+                                <span class="spacer"></span>
+                                <paper-ripple></paper-ripple>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <paper-dialog id="showYears" class="size-position" entry-animation="scale-up-animation" exit-animation="fade-out-animation" on-mouseout="_closeYears">
+                <div>
+                    <iron-list class="years">
+                        <template>
+                            <div data-year$='{{item}}'>
+                                <span>{{item}}</span>
+                                <paper-ripple></paper-ripple>
+                            </div>
+                        </template>
+                    </iron-list>
+                </div>
+            </paper-dialog>
+        </div>
+    </template>
+
+    <script type="text/javascript">
+        Polymer({
+            is: "zdkelt-calendar",
+            properties: {
+                /**
+                 * Define the initial date : the date for which the calendar is rendered the first time
+                 *
+                 * The date must be given in ISO format, for example : "2015-12-25", to display a calendar
+                 * for December 2015.
+                 */
+                initDate: {
+                    type: String,
+                    observer: '_computeDate',
+                    reflectToAttribute: true
+                },
+                /**
+                 * Define the locale of the calendar , for example : "fr", "en-gb", "en-us" ...
+                 *
+                 * By default this is the value of the browser language :
+                 *
+                 *      window.navigator.userLanguage || window.navigator.language
+                 *
+                 * Changing the attribute will redraw the calendar.
+                 */
+                i18n: {
+                    type: String,
+                    value: function() {
+                        return window.navigator.userLanguage || window.navigator.language;
+                    },
+                    observer: "_populate"
+                },
+                /* The selected date */
+                value: {
+                    type: String,
+                    reflectToAttribute: true,
+                    observer: '_valueChanged'
+                },
+                /* Define the selectable minimal date */
+                minDate: {
+                    type: String,
+                    reflectToAttribute: true,
+                    observer: '_minDateChanged'
+                },
+                /* Define the selectable maximal date */
+                maxDate: {
+                    type: String,
+                    reflectToAttribute: true,
+                    observer: '_maxDateChanged'
+                },
+                /**
+                 * Internal date for which the calender is rendered
+                 *
+                 * This date is initialize with the `initDate` value
+                 */
+                _date: {
+                    type: String,
+                    observer: "_populate"
+                }
+            },
+            /**
+            * render the calendar
+            */
+            _populate: function() {
+                var _weeks = [],
+                    disabled = false,
+                    week, fDay, w, d;
+                if (!this._date) {
+                    return this._date = moment().format();
+                }
+                moment.locale(this.i18n);
+                this._weekDays = moment.weekdaysMin();
+                if (moment().weekday(0).day() === 1) {
+                    this._weekDays.push(this._weekDays.shift());
+                }
+                this._month = moment.monthsShort()[moment(this._date).month()];
+                this._year = moment(this._date).year()
+                fDay = moment(this._date).startOf('month').startOf('week');
+
+                for (w = 0; w < 6; w++) {
+                    week = {
+                        days: []
+                    };
+                    for (d = 0; d < 7; d++) {
+                        disabled = (this.minDate && fDay.format("YYYY-MM-DD") < moment(this.minDate).format("YYYY-MM-DD")) ||
+                            (this.maxDate && fDay.format("YYYY-MM-DD") > moment(this.maxDate).format("YYYY-MM-DD"));
+                        week.days.push({
+                            day: fDay.date(),
+                            dateStr: fDay.format(),
+                            date: fDay.toDate(),
+                            class: "day" +
+                                (disabled ? " disabled" : "") +
+                                ([0, 6].indexOf(fDay.day()) !== -1 && !disabled ? " we" : "") +
+                                (fDay.month() !== moment(this._date).month() ? " nm" : "") +
+                                (fDay.format("YYYY-MM-DD") === moment().format("YYYY-MM-DD") ? " today" : "") +
+                                (this.value && fDay.format("YYYY-MM-DD") === moment(this.value).format("YYYY-MM-DD") ? " select" : "")
+
+                        });
+                        fDay.add(1, 'd');
+                    }
+                    _weeks.push(week);
+                }
+                this.set('_weeks', _weeks);
+            },
+            /**
+             *
+             * The selected date will be highligted using `--zdk-calendar-select`,
+             * the attribute `value` is set on the tag and an event `change` is fired.
+             *
+             * @event change
+             * @param {Date} send the js Date object corresponding to the selected date
+             */
+            _selectDate: function(evt) {
+                var sel = moment(evt.model.item.dateStr).format("YYYY-MM-DD");
+                if ((this.minDate && sel < this.minDate) ||
+                    (this.maxDate && sel > this.maxDate)) {
+                    return;
+                }
+                if (this.value !== evt.model.item.dateStr) {
+                    this.value = evt.model.item.dateStr;
+                    this.fire("change", evt.model.item.date);
+                } else {
+                    this.value = null;
+                    this.fire("change", null);
+                }
+            },
+            _showYears: function(evt) {
+                var dlg = this.querySelector("#showYears");
+                var years = []
+                for (var i = 1900; i < 2100; i++) {
+                    years.push(i);
+                }
+                var list = this.querySelector(".years");
+                list.items = years;
+                dlg.toggle();
+
+                setTimeout(function() {
+                    var todayYear = list.querySelector("div[data-year='2015']");
+                    todayYear.scrollIntoView({
+                        block: "start",
+                        behavior: "smooth"
+                    });
+                    list.selectItem()
+                }, 2000);
+            },
+            _closeYears: function(evt) {
+                var rel = evt.relatedTarget;
+                var dlg = this.querySelector("#showYears")
+                while (rel !== dlg && rel !== document.body) {
+                    rel = rel.parentNode;
+                }
+                if (rel === dlg) return;
+                dlg.close();
+            },
+            /**
+            * display the next month
+            */
+            _nextMonth: function() {
+                this._date = moment(this._date).add(1, 'M').format();
+                this._datechange();
+            },
+            /**
+            * display the previous month
+            */
+            _prevMonth: function() {
+                this._date = moment(this._date).add(-1, 'M').format();
+                this._datechange();
+            },
+            /**
+            * display the current month
+            */
+            _goToday: function() {
+                this._date = moment().format();
+                this._datechange();
+            },
+            /**
+            * set the internal `_date`
+            */
+            _computeDate: function() {
+                if (moment(this.initDate).isValid()) {
+                    this._date = moment(this.initDate).format();
+                } else {
+                    this._date = this._date ? this._date : moment().format();
+                }
+            },
+            /**
+             * the `_date` is the date for which the calendar is rendered.
+             *
+             * @event date-change
+             * @param {Date} send the _date, formatted as "YYYY-MM-DD"
+             */
+            _datechange: function() {
+                this.fire("date-change", moment(this._date).format("YYYY-MM-DD"));
+            },
+            /**
+             * on value change, deselect the old date if exists, then
+             * highligted the selected date (value) using `--zdk-calendar-select`,
+             */
+            _valueChanged: function(newValue, oldValue) {
+                var sel;
+                if (newValue === oldValue) {
+                    return;
+                }
+                if (oldValue) {
+                    sel = this.querySelector('.select')
+                    if (sel) sel.classList.toggle('select');
+                }
+                if (newValue) {
+                    sel = this.querySelector('[data-date="' + newValue + '"]')
+                    if (sel && !sel.classList.contains("select")) sel.classList.add("select");
+                }
+            },
+            /**
+            * check the minDate on changed
+            */
+            _minDateChanged: function(newValue, oldValue) {
+                if (newValue === oldValue) {
+                    return;
+                }
+                if (!moment(newValue).isValid()) {
+                    this.minDate = null;
+                } else {
+                    this.minDate = moment(newValue).format("YYYY-MM-DD");
+                }
+                this._populate();
+            },
+            /**
+            * check the maxDate on changed
+            */
+            _maxDateChanged: function(newValue, oldValue) {
+                if (newValue === oldValue) {
+                    return;
+                }
+                if (!moment(newValue).isValid()) {
+                    this.maxDate = null;
+                } else {
+                    this.maxDate = moment(newValue).format("YYYY-MM-DD");
+                }
+                this._populate();
+            },
+            /**
+             * return the JS Date object correponding to the selected date (value)
+             */
+            getDate: function() {
+                return this.value ? moment(this.value).toDate() : null;
+            }
+        });
+    </script>
+</dom-module>
