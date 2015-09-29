@@ -22,7 +22,8 @@
   "homepage": "https://github.com/PolymerElements/paper-card",
   "ignore": [
     "/test/",
-    "/demo/"
+    "/demo/",
+    "hero.png"
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#^1.1.0",
