@@ -13,7 +13,7 @@ A calendar component, which could be used as date-picker
 
 Example:
 
-    <zdk-calendar i18n="fr" init-date="2015-12-25"></zdk-calendar>
+    <zdkelt-calendar i18n="fr" init-date="2015-12-25"></zdkelt-calendar>
 
 ![zdk-calendar](hero.png)
 
@@ -34,7 +34,7 @@ Custom property             | Description
 -->
 
 <style is="custom-style">
-    zdk-calendar {
+    zdkelt-calendar {
         --zdk-calendar-select: {
             background: tomato;
             color: white;
@@ -76,7 +76,7 @@ Custom property             | Description
     }
 </style>
 
-<dom-module id="zdk-calendar">
+<dom-module id="zdkelt-calendar">
     <style>
         :host {
             display: block;
@@ -198,19 +198,19 @@ Custom property             | Description
     <template>
         <div class="zdkCal">
             <div class="title">
-                <div class="action" on-tap="_prevMonth">
+                <div class="action" id="prevMonth" on-tap="_prevMonth">
                     <span class="spacer"></span>
                     <iron-icon icon="arrow-back"></iron-icon>
                     <span class="spacer"></span>
                     <paper-ripple></paper-ripple>
                 </div>
-                <div class="action" on-tap="_goToday">
+                <div class="action" id="currentMonth" on-tap="_goToday">
                     <span class="spacer"></span>
                     <iron-icon icon="image:brightness-1"></iron-icon>
                     <span class="spacer"></span>
                     <paper-ripple></paper-ripple>
                 </div>
-                <div class="action" on-tap="_nextMonth">
+                <div class="action" id="nextMonth" on-tap="_nextMonth">
                     <span class="spacer"></span>
                     <iron-icon icon="arrow-forward"></iron-icon>
                     <span class="spacer"></span>
@@ -266,7 +266,7 @@ Custom property             | Description
 
     <script type="text/javascript">
         Polymer({
-            is: "zdk-calendar",
+            is: "zdkelt-calendar",
             properties: {
                 /**
                  * Define the initial date : the date for which the calendar is rendered the first time
@@ -275,8 +275,9 @@ Custom property             | Description
                  * for December 2015.
                  */
                 initDate: {
-                    type: Date,
-                    observer: '_computeDate'
+                    type: String,
+                    observer: '_computeDate',
+                    reflectToAttribute: true
                 },
                 /**
                  * Define the locale of the calendar , for example : "fr", "en-gb", "en-us" ...
