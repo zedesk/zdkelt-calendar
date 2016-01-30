@@ -1,6 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../paper-ripple/paper-ripple.html">
+<link rel="import" href="../iron-list/iron-list.html">
 <link rel="import" href="../paper-dialog/paper-dialog.html">
 <link rel="import" href="../neon-animation/animations/scale-up-animation.html">
 <link rel="import" href="../neon-animation/animations/fade-out-animation.html">
@@ -137,6 +138,7 @@ Custom property             | Description
             color: black;
         }
 
+        .years div.select,
         .day.select > div,
         .day.select:hover > div {
             @apply(--zdk-calendar-select);
@@ -162,13 +164,13 @@ Custom property             | Description
             top: 10px;
             right: 10px;
             margin: 0px;
-            height: 200px;
+            height: 180px;
             width: 150px;
         }
 
         .years div {
-            line-height: 45px;
-            font-size: 25px;
+            line-height: 35px;
+            font-size: 20px;
             text-align: center;
         }
 
@@ -248,16 +250,14 @@ Custom property             | Description
                 </div>
             </template>
 
-            <paper-dialog id="showYears" class="size-position" entry-animation="scale-up-animation" exit-animation="fade-out-animation" on-mouseout="_closeYears">
+            <paper-dialog id="showYears" class="size-position years" entry-animation="scale-up-animation" exit-animation="fade-out-animation" on-mouseout="_closeYears">
                 <div>
-                    <iron-list class="years">
-                        <template>
-                            <div data-year$='{{item}}'>
-                                <span>{{item}}</span>
-                                <paper-ripple></paper-ripple>
-                            </div>
-                        </template>
-                    </iron-list>
+                    <template is="dom-repeat" items="[[_years]]" as="item">
+                        <div data-year$="{{item}}" on-tap="_selectYear">
+                            <span>{{item}}</span>
+                            <paper-ripple></paper-ripple>
+                        </div>
+                    </template>
                 </div>
             </paper-dialog>
         </div>
@@ -320,6 +320,28 @@ Custom property             | Description
                 _date: {
                     type: String,
                     observer: "_populate"
+                },
+                _weekDays: {
+                    type: Array
+                },
+                _weeks: {
+                    type: Array
+                },
+                _month: {
+                    type: String
+                },
+                _year: {
+                    type: String
+                },
+                _years: {
+                    type: Array,
+                    value: function() {
+                        var years = []
+                        for (var i = 1900; i < 2100; i++) {
+                            years.push(i);
+                        }
+                        return years;
+                    }
                 }
             },
             /**
@@ -388,33 +410,55 @@ Custom property             | Description
                     this.fire("change", null);
                 }
             },
+            /**
+            * show the year dropdown
+            */
             _showYears: function(evt) {
                 var dlg = this.querySelector("#showYears");
-                var years = []
-                for (var i = 1900; i < 2100; i++) {
-                    years.push(i);
+                var tmp;
+                if(tmp = dlg.querySelector('.select')) {
+                    tmp.classList.remove('select');
                 }
-                var list = this.querySelector(".years");
-                list.items = years;
+                var todayYear = dlg.querySelector("div[data-year='"+moment(this._date).year()+"']");
+                todayYear.classList.add('select');
                 dlg.toggle();
 
-                setTimeout(function() {
-                    var todayYear = list.querySelector("div[data-year='2015']");
-                    todayYear.scrollIntoView({
+                var that=this;
+                setTimeout( function(){
+                    var scrollDate = moment(that._date).year() - 2;
+                    if( scrollDate < 1900 ) scrollDate=1900;
+                    dlg.querySelector("div[data-year='"+scrollDate+"']").scrollIntoView({
                         block: "start",
                         behavior: "smooth"
                     });
-                    list.selectItem()
-                }, 2000);
+                },100);
+
             },
+            /**
+            * close the year dropdown when the mouse is out
+            */
             _closeYears: function(evt) {
                 var rel = evt.relatedTarget;
-                var dlg = this.querySelector("#showYears")
+                var dlg = this.querySelector("#showYears");
                 while (rel !== dlg && rel !== document.body) {
                     rel = rel.parentNode;
                 }
                 if (rel === dlg) return;
                 dlg.close();
+            },
+            /**
+            * get the new year from the select year in the dropdown menu
+            */
+            _selectYear: function(evt) {
+                var dlg = this.querySelector("#showYears");
+                var rel = evt.target;
+                while(rel.tagName!=="DIV") {
+                    rel = rel.parentNode;
+                }
+                dlg.querySelector('.select').classList.remove('select');
+                rel.classList.add('select');
+                this._date = moment(this._date).year(rel.dataset["year"]);
+                this._datechange();
             },
             /**
             * display the next month
