@@ -1,11 +1,10 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../paper-ripple/paper-ripple.html">
-<link rel="import" href="../iron-icons/iron-icons.html">
-<link rel="import" href="../iron-icons/image-icons.html">
 <link rel="import" href="../paper-dialog/paper-dialog.html">
 <link rel="import" href="../neon-animation/animations/scale-up-animation.html">
 <link rel="import" href="../neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="icons.html">
 <script src="../moment/min/moment-with-locales.min.js" charset="utf-8"></script>
 
 <!--
@@ -200,19 +199,19 @@ Custom property             | Description
             <div class="title">
                 <div class="action" id="prevMonth" on-tap="_prevMonth">
                     <span class="spacer"></span>
-                    <iron-icon icon="arrow-back"></iron-icon>
+                    <iron-icon icon="zdkicons:prevmonth"></iron-icon>
                     <span class="spacer"></span>
                     <paper-ripple></paper-ripple>
                 </div>
                 <div class="action" id="currentMonth" on-tap="_goToday">
                     <span class="spacer"></span>
-                    <iron-icon icon="image:brightness-1"></iron-icon>
+                    <iron-icon icon="zdkicons:today"></iron-icon>
                     <span class="spacer"></span>
                     <paper-ripple></paper-ripple>
                 </div>
                 <div class="action" id="nextMonth" on-tap="_nextMonth">
                     <span class="spacer"></span>
-                    <iron-icon icon="arrow-forward"></iron-icon>
+                    <iron-icon icon="zdkicons:nextmonth"></iron-icon>
                     <span class="spacer"></span>
                     <paper-ripple></paper-ripple>
                 </div>
