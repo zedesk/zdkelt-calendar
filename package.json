@@ -1,0 +1,32 @@
+{
+  "name": "zdkelt-calendar",
+  "version": "1.0.0-rc3",
+  "description": "a calendar webcomponent",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "wct",
+    "clean": "rm -rf bower-components",
+    "postinstall": "bower install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zedesk/zdkElt-calendar.git"
+  },
+  "author": "zedesk <dev@zedesk.net>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zedesk/zdkElt-calendar/issues"
+  },
+  "homepage": "https://github.com/zedesk/zdkElt-calendar#readme",
+  "devDependencies": {
+    "bower": "^1.7.7",
+    "crisper": "^2.0.1",
+    "jscs": "^2.9.0",
+    "polylint": "^2.9.0",
+    "polyserve": "^0.5.0",
+    "web-component-tester": "^4.1.0"
+  }
+}

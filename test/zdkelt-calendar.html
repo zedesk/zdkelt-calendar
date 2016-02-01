@@ -40,6 +40,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <!-- <zdk-calendar><zdk-calendar> -->
 
     <script>
+        function isVisible(el) {
+            var rect = el.getBoundingClientRect();
+            if( rect.top >= 0 && rect.bottom <= el.parentElement.offsetHeight) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
         describe('initialize', function() {
             var cal, today;
 
@@ -220,6 +229,41 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                 btn.dispatchEvent(evt);
             });
+
+            it('select year', function(done) {
+                var evt = new MouseEvent("click", { button: 0 });
+                var btn = cal.querySelector(".dateTitle");
+                var yearList = cal.querySelector(".years");
+
+                btn.addEventListener('click', function(evt) {
+                    //debugger;
+                    var today = moment();
+                    var yearDiv = yearList.querySelector('[data-year="'+today.year()+'"]');
+                    assert.isTrue(isVisible(yearDiv));
+                    assert.isTrue(yearDiv.classList.contains('select'));
+                    var newYearDiv = yearList.querySelector('[data-year="'+(today.year()-3)+'"]');
+                    var evt2 = new MouseEvent("click", { button: 0 });
+
+                    cal.addEventListener("date-change", function(evt) {
+                        console.log("here");
+                        var today = moment();
+                        assert.equal(evt.detail, today.add(-3,'Y').format("YYYY-MM-DD"));
+                        // done();
+                    });
+
+                    newYearDiv.addEventListener("click", function(evt) {
+                        // debugger;
+                        console.log("click");
+                        assert.isFalse(yearDiv.classList.contains('select'));
+                        assert.isTrue(newYearDiv.classList.contains('select'));
+                        done();
+                    })
+
+                    newYearDiv.dispatchEvent(evt2);
+                });
+
+                btn.dispatchEvent(evt);
+            })
         });
 
         describe('select date', function() {
