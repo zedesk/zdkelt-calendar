@@ -1,8 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../paper-ripple/paper-ripple.html">
-<link rel="import" href="../iron-list/iron-list.html">
-<link rel="import" href="../paper-dialog/paper-dialog.html">
+<link rel="import" href="../iron-dropdown/iron-dropdown.html">
 <link rel="import" href="../neon-animation/animations/scale-up-animation.html">
 <link rel="import" href="../neon-animation/animations/fade-out-animation.html">
 <link rel="import" href="icons.html">
@@ -159,15 +158,6 @@ Custom property             | Description
             height: 50%;
         }
 
-        .size-position {
-            position: absolute !important;
-            top: 10px;
-            right: 10px;
-            margin: 0px;
-            height: 180px;
-            width: 150px;
-        }
-
         .years div {
             line-height: 35px;
             font-size: 20px;
@@ -193,6 +183,16 @@ Custom property             | Description
 
         .spacer {
             flex: 1
+        }
+
+        .dropdown-content {
+            background-color: white;
+            line-height: 20px;
+            border-radius: 3px;
+            box-shadow: 0px 2px 6px #ccc;
+            width: 150px;
+            height: 180px;
+            margin:20px
         }
     </style>
 
@@ -250,8 +250,12 @@ Custom property             | Description
                 </div>
             </template>
 
-            <paper-dialog id="showYears" class="size-position years" entry-animation="scale-up-animation" exit-animation="fade-out-animation" on-mouseout="_closeYears">
-                <div>
+            <iron-dropdown id="showYears" class=" years"
+                horizontal-align="right" vertical-align="top"
+                entry-animation="scale-up-animation"
+                exit-animation="fade-out-animation"
+                on-mouseout="_closeYears">
+                <div class="dropdown-content" >
                     <template is="dom-repeat" items="[[_years]]" as="item">
                         <div data-year$="{{item}}" on-tap="_selectYear">
                             <span>{{item}}</span>
@@ -259,7 +263,7 @@ Custom property             | Description
                         </div>
                     </template>
                 </div>
-            </paper-dialog>
+            </iron-dropdown>
         </div>
     </template>
 
@@ -421,18 +425,17 @@ Custom property             | Description
                 }
                 var todayYear = dlg.querySelector("div[data-year='"+moment(this._date).year()+"']");
                 todayYear.classList.add('select');
-                dlg.toggle();
 
                 var that=this;
-                setTimeout( function(){
+                dlg.addEventListener('iron-overlay-opened', function() {
                     var scrollDate = moment(that._date).year() - 2;
                     if( scrollDate < 1900 ) scrollDate=1900;
                     dlg.querySelector("div[data-year='"+scrollDate+"']").scrollIntoView({
                         block: "start",
                         behavior: "smooth"
                     });
-                },100);
-
+                })
+                dlg.toggle();
             },
             /**
             * close the year dropdown when the mouse is out
