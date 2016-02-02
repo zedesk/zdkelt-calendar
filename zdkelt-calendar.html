@@ -378,7 +378,7 @@ Custom property             | Description
                             (this.maxDate && fDay.format("YYYY-MM-DD") > moment(this.maxDate).format("YYYY-MM-DD"));
                         week.days.push({
                             day: fDay.date(),
-                            dateStr: fDay.format(),
+                            dateStr: fDay.format("YYYY-MM-DD"),
                             date: fDay.toDate(),
                             class: "day" +
                                 (disabled ? " disabled" : "") +
