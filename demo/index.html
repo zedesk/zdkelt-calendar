@@ -6,7 +6,7 @@
     <title>zdk-Calendar demo page</title>
 
     <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
-    <link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
+    <link rel="import" href="../../paper-styles/paper-styles.html">
     <link rel="import" href="../zdkelt-calendar.html">
     <link rel="import" href="theme.html">
     <link rel="stylesheet" href="demo.css" charset="utf-8">
@@ -22,7 +22,7 @@
         </div>
         <div class="cell">
             <div>
-                selected value :
+                <label>selected value :</label>
                 <span class="value"></span>
             </div>
             <div>
@@ -47,6 +47,7 @@
     <script type="text/javascript">
         var cal = document.querySelector("#cal");
         cal.addEventListener("change", function(evt) {
+            console.log(evt);
             document.querySelector(".value").innerHTML = cal.value;
         });
 
