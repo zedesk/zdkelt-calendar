@@ -276,6 +276,8 @@ Custom property             | Description
                  *
                  * The date must be given in ISO format, for example : "2015-12-25", to display a calendar
                  * for December 2015.
+                 *
+                 * only the year, month and day are taken in account, the timezone isn't taken in account
                  */
                 initDate: {
                     type: String,
@@ -489,9 +491,10 @@ Custom property             | Description
             */
             _computeDate: function() {
                 if (moment(this.initDate).isValid()) {
-                    this._date = moment(this.initDate).format();
+                    this._date = moment(this.initDate,"YYYY-MM-DD").format("YYYY-MM-DD");
+                    this.initDate = moment(this.initDate,"YYYY-MM-DD").format("YYYY-MM-DD");
                 } else {
-                    this._date = this._date ? this._date : moment().format();
+                    this._date = this._date ? this._date : moment().format("YYYY-MM-DD");
                 }
             },
             /**
