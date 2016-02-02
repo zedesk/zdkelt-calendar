@@ -37,8 +37,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </template>
     </test-fixture>
 
-    <!-- <zdk-calendar><zdk-calendar> -->
-
     <script>
         function isVisible(el) {
             var rect = el.getBoundingClientRect();
@@ -78,14 +76,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             });
 
             it('set initDate property', function(done) {
-                cal.initDate = '2015-08-22';
+                cal.initDate = '2015-08-22T00:00:00Z';
                 Polymer.dom.flush();
                 assert.equal(cal.getAttribute('init-date'), '2015-08-22');
                 assert.equal(moment(cal.initDate).format("YYYY-MM-DD"), '2015-08-22');
                 done();
             });
 
+            it('set initDate property (timezone)', function(done) {
+                cal.initDate = '2016-02-01T00:00:00+02:00';
+                Polymer.dom.flush();
+                assert.equal(cal.getAttribute('init-date'), '2016-02-01');
+                assert.equal(moment(cal.initDate).format("YYYY-MM-DD"), '2016-02-01');
+                done();
+            });
+
             it('set min-date attribute', function(done) {
+                cal.initDate = '2015-08-01';
+                Polymer.dom.flush();
+
                 cal.setAttribute('min-date','2015-08-22');
                 Polymer.dom.flush();
                 assert.equal(cal.getAttribute('min-date'), '2015-08-22');
@@ -94,14 +103,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             });
 
             it('set min-date property', function(done) {
+                cal.initDate = '2015-08-01';
+                Polymer.dom.flush();
+
                 cal.minDate = '2015-08-22';
                 Polymer.dom.flush();
                 assert.equal(cal.getAttribute('min-date'), '2015-08-22');
                 assert.equal(moment(cal.minDate).format("YYYY-MM-DD"), '2015-08-22');
-                done();
+
+                var elts = [].slice.call(cal.querySelectorAll("*[data-date]"));
+                var promises = elts.map( function(div) {
+                    if( div.dataset["date"] < cal.minDate ) {
+                        assert.isTrue(div.classList.contains('disabled'));
+                    } else {
+                        assert.isFalse(div.classList.contains('disabled'));
+                    }
+                })
+                Promise.all(promises)
+                    .then( function() { done(); });
+
             });
 
             it('set max-date attribute', function(done) {
+                cal.initDate = '2015-08-01';
+                Polymer.dom.flush();
+
                 cal.setAttribute('max-date','2015-08-22');
                 Polymer.dom.flush();
                 assert.equal(cal.getAttribute('max-date'), '2015-08-22');
@@ -110,11 +136,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             });
 
             it('set maxDate property', function(done) {
+                cal.initDate = '2015-08-01';
+                Polymer.dom.flush();
+
                 cal.maxDate = '2015-08-22';
                 Polymer.dom.flush();
                 assert.equal(cal.getAttribute('max-date'), '2015-08-22');
                 assert.equal(moment(cal.maxDate).format("YYYY-MM-DD"), '2015-08-22');
-                done();
+
+                var elts = [].slice.call(cal.querySelectorAll("*[data-date]"));
+                var promises = elts.map( function(div) {
+                    if( div.dataset["date"] > cal.maxDate ) {
+                        assert.isTrue(div.classList.contains('disabled'));
+                    } else {
+                        assert.isFalse(div.classList.contains('disabled'));
+                    }
+                })
+                Promise.all(promises)
+                    .then( function() { done(); });
             });
         });
 
@@ -244,20 +283,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     var newYearDiv = yearList.querySelector('[data-year="'+(today.year()-3)+'"]');
                     var evt2 = new MouseEvent("click", { button: 0 });
 
-                    cal.addEventListener("date-change", function(evt) {
-                        console.log("here");
-                        var today = moment();
-                        assert.equal(evt.detail, today.add(-3,'Y').format("YYYY-MM-DD"));
-                        // done();
-                    });
+                    var event1 = new Promise( function(resolve, reject) {
+                            cal.addEventListener("date-change", function(evt) {
+                                var today = moment();
+                                assert.equal(evt.detail, today.add(-3,'Y').format("YYYY-MM-DD"));
+                                resolve( );
+                            });
+                        });
 
-                    newYearDiv.addEventListener("click", function(evt) {
-                        // debugger;
-                        console.log("click");
-                        assert.isFalse(yearDiv.classList.contains('select'));
-                        assert.isTrue(newYearDiv.classList.contains('select'));
-                        done();
-                    })
+                    var event2 = new Promise( function(resolve, reject) {
+                            newYearDiv.addEventListener("click", function(evt) {
+                                assert.isFalse(yearDiv.classList.contains('select'));
+                                assert.isTrue(newYearDiv.classList.contains('select'));
+                                resolve( );
+                            });
+                        });
+
+                    Promise.all([event1, event2])
+                        .then( function(res) { done(); });
 
                     newYearDiv.dispatchEvent(evt2);
                 });
@@ -281,15 +324,41 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 cal.initDate = '2015-10-01';
                 Polymer.dom.flush();
 
-                var day = cal.querySelector('.day[data-date="'+moment('2015-10-22').format()+'"]');
+                var day = cal.querySelector('.day[data-date="2015-10-22"]');
                 var evt = new MouseEvent("click", { button: 0 });
 
                 cal.addEventListener("change", function(evt) {
                     var today = moment();
                     assert.property(cal, "value");
-                    assert.equal(cal.getAttribute('value'),moment('2015-10-22').format());
-                    assert.equal(cal.value,moment('2015-10-22').format() );
+                    assert.equal(cal.getAttribute('value'),'2015-10-22');
+                    assert.equal(cal.value,'2015-10-22' );
                     assert.typeOf(cal.getDate(), 'date');
+                    assert.isTrue(day.classList.contains('select'));
+                    done();
+                });
+
+                day.dispatchEvent(evt);
+            });
+
+            it('select a new date', function(done) {
+                cal.initDate = '2015-10-01';
+                Polymer.dom.flush();
+
+                cal.value = '2015-10-10';
+                var selDate = cal.querySelector('.day[data-date="2015-10-10"]')
+                assert.isTrue(selDate.classList.contains('select'));
+
+                var day = cal.querySelector('.day[data-date="2015-10-22"]');
+                var evt = new MouseEvent("click", { button: 0 });
+
+                cal.addEventListener("change", function(evt) {
+                    var today = moment();
+                    assert.property(cal, "value");
+                    assert.equal(cal.getAttribute('value'),'2015-10-22');
+                    assert.equal(cal.value,'2015-10-22' );
+                    assert.typeOf(cal.getDate(), 'date');
+                    assert.isTrue(day.classList.contains('select'));
+                    assert.isFalse(selDate.classList.contains('select'));
                     done();
                 });
 
@@ -301,7 +370,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 cal.minDate = '2015-10-15'
                 Polymer.dom.flush();
 
-                var day = cal.querySelector('.day[data-date="'+moment('2015-10-10').format()+'"]');
+                var day = cal.querySelector('.day[data-date="2015-10-10"]');
                 var evt = new MouseEvent("click", { button: 0 });
                 day.dispatchEvent(evt);
                 Polymer.dom.flush();
@@ -317,7 +386,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 cal.maxDate = '2015-10-15'
                 Polymer.dom.flush();
 
-                var day = cal.querySelector('.day[data-date="'+moment('2015-10-20').format()+'"]');
+                var day = cal.querySelector('.day[data-date="2015-10-20"]');
                 var evt = new MouseEvent("click", { button: 0 });
                 day.dispatchEvent(evt);
                 Polymer.dom.flush();
