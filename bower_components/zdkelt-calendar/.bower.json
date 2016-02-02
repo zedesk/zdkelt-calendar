@@ -49,6 +49,5 @@
   },
   "_source": "git://github.com/zedesk/zdkelt-calendar.git",
   "_target": "^1.0.0",
-  "_originalSource": "zedesk/zdkelt-calendar",
-  "_direct": true
+  "_originalSource": "zedesk/zdkelt-calendar"
 }
