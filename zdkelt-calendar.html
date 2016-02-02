@@ -10,6 +10,8 @@
 <!--
 A calendar component, which could be used as date-picker
 
+version : __1.0.0__
+
 Example:
 
     <zdkelt-calendar i18n="fr" init-date="2015-12-25"></zdkelt-calendar>
@@ -276,6 +278,8 @@ Custom property             | Description
                  *
                  * The date must be given in ISO format, for example : "2015-12-25", to display a calendar
                  * for December 2015.
+                 *
+                 * only the year, month and day are taken in account, the timezone isn't taken in account
                  */
                 initDate: {
                     type: String,
@@ -298,19 +302,19 @@ Custom property             | Description
                     },
                     observer: "_populate"
                 },
-                /* The selected date */
+                /* The selected date ( format : YYYY-MM-DD ) */
                 value: {
                     type: String,
                     reflectToAttribute: true,
                     observer: '_valueChanged'
                 },
-                /* Define the selectable minimal date */
+                /* Define the selectable minimal date ( format : YYYY-MM-DD ) */
                 minDate: {
                     type: String,
                     reflectToAttribute: true,
                     observer: '_minDateChanged'
                 },
-                /* Define the selectable maximal date */
+                /* Define the selectable maximal date ( format : YYYY-MM-DD ) */
                 maxDate: {
                     type: String,
                     reflectToAttribute: true,
@@ -376,15 +380,14 @@ Custom property             | Description
                             (this.maxDate && fDay.format("YYYY-MM-DD") > moment(this.maxDate).format("YYYY-MM-DD"));
                         week.days.push({
                             day: fDay.date(),
-                            dateStr: fDay.format(),
+                            dateStr: fDay.format("YYYY-MM-DD"),
                             date: fDay.toDate(),
                             class: "day" +
                                 (disabled ? " disabled" : "") +
                                 ([0, 6].indexOf(fDay.day()) !== -1 && !disabled ? " we" : "") +
                                 (fDay.month() !== moment(this._date).month() ? " nm" : "") +
                                 (fDay.format("YYYY-MM-DD") === moment().format("YYYY-MM-DD") ? " today" : "") +
-                                (this.value && fDay.format("YYYY-MM-DD") === moment(this.value).format("YYYY-MM-DD") ? " select" : "")
-
+                                (this.value && fDay.format("YYYY-MM-DD") === this.value ? " select" : "")
                         });
                         fDay.add(1, 'd');
                     }
@@ -406,6 +409,7 @@ Custom property             | Description
                     (this.maxDate && sel > this.maxDate)) {
                     return;
                 }
+
                 if (this.value !== evt.model.item.dateStr) {
                     this.value = evt.model.item.dateStr;
                     this.fire("change", evt.model.item.date);
@@ -462,6 +466,7 @@ Custom property             | Description
                 rel.classList.add('select');
                 this._date = moment(this._date).year(rel.dataset["year"]);
                 this._datechange();
+                dlg.close();
             },
             /**
             * display the next month
@@ -489,9 +494,10 @@ Custom property             | Description
             */
             _computeDate: function() {
                 if (moment(this.initDate).isValid()) {
-                    this._date = moment(this.initDate).format();
+                    this._date = moment(this.initDate,"YYYY-MM-DD").format("YYYY-MM-DD");
+                    this.initDate = moment(this.initDate,"YYYY-MM-DD").format("YYYY-MM-DD");
                 } else {
-                    this._date = this._date ? this._date : moment().format();
+                    this._date = this._date ? this._date : moment().format("YYYY-MM-DD");
                 }
             },
             /**
@@ -512,6 +518,7 @@ Custom property             | Description
                 if (newValue === oldValue) {
                     return;
                 }
+
                 if (oldValue) {
                     sel = this.querySelector('.select')
                     if (sel) sel.classList.toggle('select');
