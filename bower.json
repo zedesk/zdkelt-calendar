@@ -16,10 +16,10 @@
   "main": "zdk-calendar.html",
   "repository": {
     "type": "git",
-    "url": "git://github.com/PolymerElements/paper-card.git"
+    "url": "git://github.com/zedesk/zdkelt-calendar.git"
   },
-  "license": "http://polymer.github.io/LICENSE.txt",
-  "homepage": "https://github.com/PolymerElements/paper-card",
+  "license": "ISC",
+  "homepage": "http://zedesk.github.io/zdkelt-calendar",
   "ignore": [
     "/test/",
     "/demo/"
