@@ -1,6 +1,6 @@
 {
   "name": "zdkelt-calendar",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "a calendar webcomponent",
   "main": "index.js",
   "directories": {
@@ -9,7 +9,8 @@
   "scripts": {
     "test": "wct",
     "clean": "rm -rf bower-components",
-    "postinstall": "bower install"
+    "postinstall": "bower install",
+    "start":"polyserve"
   },
   "repository": {
     "type": "git",
