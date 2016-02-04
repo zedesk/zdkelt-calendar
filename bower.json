@@ -18,7 +18,7 @@
     "type": "git",
     "url": "git://github.com/zedesk/zdkelt-calendar.git"
   },
-  "license": "ISC",
+  "license": "https://github.com/zedesk/zdkElt-calendar/LICENCE",
   "homepage": "http://zedesk.github.io/zdkelt-calendar",
   "ignore": [
     "/test/",

@@ -17,7 +17,7 @@
     "url": "git+https://github.com/zedesk/zdkElt-calendar.git"
   },
   "author": "zedesk <dev@zedesk.net>",
-  "license": "ISC",
+  "license": "https://github.com/zedesk/zdkElt-calendar/LICENCE",
   "bugs": {
     "url": "https://github.com/zedesk/zdkElt-calendar/issues"
   },
