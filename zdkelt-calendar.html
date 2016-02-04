@@ -10,7 +10,7 @@
 <!--
 A calendar component, which could be used as date-picker
 
-version : __1.0.1__
+version : __1.0.2__
 
 Example:
 
@@ -20,61 +20,58 @@ Example:
 
 ### Styling
 
-Custom property             | Description
-----------------------------|----------------------
-`--zdk-calendar-select`     | style of the selected date
-`--zdk-calendar-week`       | background color of the calendar
-`--zdk-calendar-weekend`    | background color for week-end days
-`--zdk-calendar-notinmonth` | style for days not in the current month
-`--zdk-calendar-title`      | style of date title bar
-`--zdk-calendar-weekdays`   | style of the week days name
-`--zdk-calendar-today`      | style of the today date
+Custom property             | Default                            | Description
+----------------------------|------------------------------------|----------------------
+`--zdk-calendar-select`     | bg : `--accent-color`              | style of the selected date
+                            | text: `--primary-background-color` |
+`--zdk-calendar-week`       | bg : `--primary-background-color`  | background color of the calendar
+                            | text: `--primary-text-color`       |
+`--zdk-calendar-weekend`    | bg :`--light-primary-color`        | background color for week-end days
+`--zdk-calendar-notinmonth` | text: `--disabled-text-color`      | style for days not in the current month
+`--zdk-calendar-title`      | bg : `--dark-primary-color`        | style of date title bar
+                            | text: `--primary-background-color` |
+`--zdk-calendar-weekdays`   | bg : `--default-primary-color`     | style of the week days name
+                            | text: `--primary-background-color` |
+`--zdk-calendar-today`      | bg : `--primary-color`             | style of the today date
+                            | text: `--primary-background-color` |
 
 @group zdk Elements
 @demo
 -->
 
 <style is="custom-style">
-    zdkelt-calendar {
-        --zdk-calendar-select: {
-            background: tomato;
-            color: white;
-        }
-        ;
-        --zdk-calendar-week: {
-            background: white;
-            color: black;
-        }
-        ;
-        --zdk-calendar-weekend: {
-            background: LemonChiffon;
-        }
-        ;
-        --zdk-calendar-notinmonth: {
-            color: Gainsboro;
-        }
-        --zdk-calendar-title: {
-            background: crimson;
-            color: white;
-            font-size: 110%;
-        }
-        ;
-        --zdk-calendar-weekdays: {
-            background: Khaki;
-            font-weight: bold;
-        }
-        ;
-        --zdk-calendar-today: {
-            background: rgba(30, 144, 255, 0.5);
-            border-radius: 100%;
-        }
-        ;
-        --zdk-calendar-action: {
-            background: DarkRed;
-            color: white;
-        }
-        ;
-    }
+zdkelt-calendar {
+	--zdk-calendar-select: {
+		background: var(--accent-color);
+		color: var(--primary-background-color);
+	};
+	--zdk-calendar-week: {
+		background: var(--primary-background-color);
+		color:var(--primary-text-color);
+	};
+	--zdk-calendar-weekend: {
+		background: var(--light-primary-color);
+	};
+	--zdk-calendar-notinmonth: {
+		color:var(--disabled-text-color);
+	}
+	--zdk-calendar-title: {
+		background: var(--dark-primary-color);
+		color: var(--primary-background-color);
+		font-size:110%;
+	};
+	--zdk-calendar-today: {
+		background: var(--primary-color);
+		color:var(--primary-background-color);
+	};
+	--zdk-calendar-weekdays: {
+		background: var(--default-primary-color);
+		color:var(--primary-background-color);
+	};
+	--zdk-calendar-action: {
+		background:none;
+	};
+}
 </style>
 
 <dom-module id="zdkelt-calendar">

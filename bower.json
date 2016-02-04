@@ -1,6 +1,6 @@
 {
   "name": "zdkelt-calendar",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A date picker",
   "authors": [
     "zeDesk <dev@zedesk.net>"
@@ -18,7 +18,7 @@
     "type": "git",
     "url": "git://github.com/zedesk/zdkelt-calendar.git"
   },
-  "license": "ISC",
+  "license": "https://github.com/zedesk/zdkElt-calendar/LICENCE",
   "homepage": "http://zedesk.github.io/zdkelt-calendar",
   "ignore": [
     "/test/",

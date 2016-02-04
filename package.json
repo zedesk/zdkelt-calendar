@@ -1,6 +1,6 @@
 {
   "name": "zdkelt-calendar",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "a calendar webcomponent",
   "main": "index.js",
   "directories": {
@@ -17,7 +17,7 @@
     "url": "git+https://github.com/zedesk/zdkElt-calendar.git"
   },
   "author": "zedesk <dev@zedesk.net>",
-  "license": "ISC",
+  "license": "https://github.com/zedesk/zdkElt-calendar/LICENCE",
   "bugs": {
     "url": "https://github.com/zedesk/zdkElt-calendar/issues"
   },
