@@ -1,0 +1,404 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+
+<head>
+
+    <title>zdkelt-calendar tests</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../test-fixture/test-fixture-mocha.js"></script>
+
+    <link rel="import" href="../../test-fixture/test-fixture.html">
+    <link rel="import" href="../../moment/min/moment-with-locales.min.js">
+    <link rel="import" href="../zdkelt-calendar.html">
+
+</head>
+
+<body>
+
+    <test-fixture id="basic">
+        <template>
+            <zdkelt-calendar><zdkelt-calendar>
+        </template>
+    </test-fixture>
+
+    <script>
+        function isVisible(el) {
+            var rect = el.getBoundingClientRect();
+            if( rect.top >= 0 && rect.bottom <= el.parentElement.offsetHeight) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        describe('initialize', function() {
+            var cal, today;
+
+            beforeEach( function(done) {
+                moment.locale("fr");
+                today = moment();
+                cal = fixture('basic');
+                cal.i18n = "fr";
+                Polymer.dom.flush();
+                done();
+            });
+
+            it('no value by default', function(done) {
+                assert.equal(cal.getAttribute('value'), null);
+                assert.equal(cal.getAttribute('minDate'), null);
+                assert.equal(cal.getAttribute('maxDate'), null);
+                assert.equal(cal.getAttribute('i18n'), null);
+                done();
+            });
+
+            it('set init-date attribute', function(done) {
+                cal.setAttribute('init-date','2015-08-22');
+                Polymer.dom.flush();
+                assert.equal(cal.getAttribute('init-date'), '2015-08-22');
+                assert.equal(moment(cal.initDate).format("YYYY-MM-DD"), '2015-08-22');
+                done();
+            });
+
+            it('set initDate property', function(done) {
+                cal.initDate = '2015-08-22T00:00:00Z';
+                Polymer.dom.flush();
+                assert.equal(cal.getAttribute('init-date'), '2015-08-22');
+                assert.equal(moment(cal.initDate).format("YYYY-MM-DD"), '2015-08-22');
+                done();
+            });
+
+            it('set initDate property (timezone)', function(done) {
+                cal.initDate = '2016-02-01T00:00:00+02:00';
+                Polymer.dom.flush();
+                assert.equal(cal.getAttribute('init-date'), '2016-02-01');
+                assert.equal(moment(cal.initDate).format("YYYY-MM-DD"), '2016-02-01');
+                done();
+            });
+
+            it('set min-date attribute', function(done) {
+                cal.initDate = '2015-08-01';
+                Polymer.dom.flush();
+
+                cal.setAttribute('min-date','2015-08-22');
+                Polymer.dom.flush();
+                assert.equal(cal.getAttribute('min-date'), '2015-08-22');
+                assert.equal(moment(cal.minDate).format("YYYY-MM-DD"), '2015-08-22');
+                done();
+            });
+
+            it('set min-date property', function(done) {
+                cal.initDate = '2015-08-01';
+                Polymer.dom.flush();
+
+                cal.minDate = '2015-08-22';
+                Polymer.dom.flush();
+                assert.equal(cal.getAttribute('min-date'), '2015-08-22');
+                assert.equal(moment(cal.minDate).format("YYYY-MM-DD"), '2015-08-22');
+
+                var elts = [].slice.call(cal.querySelectorAll("*[data-date]"));
+                var promises = elts.map( function(div) {
+                    if( div.dataset["date"] < cal.minDate ) {
+                        assert.isTrue(div.classList.contains('disabled'));
+                    } else {
+                        assert.isFalse(div.classList.contains('disabled'));
+                    }
+                })
+                Promise.all(promises)
+                    .then( function() { done(); });
+
+            });
+
+            it('set max-date attribute', function(done) {
+                cal.initDate = '2015-08-01';
+                Polymer.dom.flush();
+
+                cal.setAttribute('max-date','2015-08-22');
+                Polymer.dom.flush();
+                assert.equal(cal.getAttribute('max-date'), '2015-08-22');
+                assert.equal(moment(cal.maxDate).format("YYYY-MM-DD"), '2015-08-22');
+                done();
+            });
+
+            it('set maxDate property', function(done) {
+                cal.initDate = '2015-08-01';
+                Polymer.dom.flush();
+
+                cal.maxDate = '2015-08-22';
+                Polymer.dom.flush();
+                assert.equal(cal.getAttribute('max-date'), '2015-08-22');
+                assert.equal(moment(cal.maxDate).format("YYYY-MM-DD"), '2015-08-22');
+
+                var elts = [].slice.call(cal.querySelectorAll("*[data-date]"));
+                var promises = elts.map( function(div) {
+                    if( div.dataset["date"] > cal.maxDate ) {
+                        assert.isTrue(div.classList.contains('disabled'));
+                    } else {
+                        assert.isFalse(div.classList.contains('disabled'));
+                    }
+                })
+                Promise.all(promises)
+                    .then( function() { done(); });
+            });
+        });
+
+        describe('i18n', function() {
+            it('i18n french', function(done) {
+                moment.locale("fr");
+                var today = moment();
+                var cal = fixture('basic');
+                cal.i18n = "fr";
+                Polymer.dom.flush()
+                var spans = cal.querySelectorAll('.title .dateTitle > div > span');
+                assert.equal(spans[0].innerHTML,moment.monthsShort()[today.month()]);
+                assert.equal(spans[1].innerHTML,today.year());
+                var divs = cal.querySelectorAll('.weekdays > div');
+                assert.equal(divs[0].textContent.trim(), 'Lu');
+                assert.equal(divs[1].textContent.trim(), 'Ma');
+                assert.equal(divs[2].textContent.trim(), 'Me');
+                assert.equal(divs[3].textContent.trim(), 'Je');
+                assert.equal(divs[4].textContent.trim(), 'Ve');
+                assert.equal(divs[5].textContent.trim(), 'Sa');
+                assert.equal(divs[6].textContent.trim(), 'Di');
+                done();
+            });
+
+            it('i18n en', function(done) {
+                moment.locale("en");
+                var today = moment();
+                var cal = fixture('basic');
+                cal.i18n = "en";
+                Polymer.dom.flush()
+                var spans = cal.querySelectorAll('.title .dateTitle > div > span');
+                assert.equal(spans[0].innerHTML,moment.monthsShort()[today.month()]);
+                assert.equal(spans[1].innerHTML,today.year());
+                var divs = cal.querySelectorAll('.weekdays > div');
+                assert.equal(divs[0].textContent.trim(), 'Su');
+                assert.equal(divs[1].textContent.trim(), 'Mo');
+                assert.equal(divs[2].textContent.trim(), 'Tu');
+                assert.equal(divs[3].textContent.trim(), 'We');
+                assert.equal(divs[4].textContent.trim(), 'Th');
+                assert.equal(divs[5].textContent.trim(), 'Fr');
+                assert.equal(divs[6].textContent.trim(), 'Sa');
+                done();
+            });
+
+            it('i18n en-gb', function(done) {
+                moment.locale("en-gb");
+                var today = moment();
+                var cal = fixture('basic');
+                cal.i18n = "en-gb";
+                Polymer.dom.flush()
+                var spans = cal.querySelectorAll('.title .dateTitle > div > span');
+                assert.equal(spans[0].innerHTML,moment.monthsShort()[today.month()]);
+                assert.equal(spans[1].innerHTML,today.year());
+                var divs = cal.querySelectorAll('.weekdays > div');
+                assert.equal(divs[0].textContent.trim(), 'Mo');
+                assert.equal(divs[1].textContent.trim(), 'Tu');
+                assert.equal(divs[2].textContent.trim(), 'We');
+                assert.equal(divs[3].textContent.trim(), 'Th');
+                assert.equal(divs[4].textContent.trim(), 'Fr');
+                assert.equal(divs[5].textContent.trim(), 'Sa');
+                assert.equal(divs[6].textContent.trim(), 'Su');
+                done()
+            });
+
+        });
+
+        describe('action buttons', function() {
+            var cal, today;
+
+            beforeEach( function(done) {
+                moment.locale("fr");
+                today = moment();
+                cal = fixture('basic');
+                cal.i18n = "fr";
+                Polymer.dom.flush();
+                done();
+            });
+
+            it('previous month', function(done) {
+                var evt = new MouseEvent("click", { button: 0 });
+                var btn = cal.querySelector("#prevMonth");
+
+                cal.addEventListener("date-change", function(evt) {
+                    assert.equal(evt.detail, today.add(-1,'M').format("YYYY-MM-DD"));
+                    done();
+                });
+
+                btn.dispatchEvent(evt);
+            });
+
+            it('current month', function(done) {
+                var evt = new MouseEvent("click", { button: 0 });
+                var btn = cal.querySelector("#currentMonth");
+
+                cal.addEventListener("date-change", function(evt) {
+                    assert.equal(evt.detail, today.format("YYYY-MM-DD"));
+                    done();
+                });
+
+                btn.dispatchEvent(evt);
+            });
+
+            it('next month', function(done) {
+                var evt = new MouseEvent("click", { button: 0 });
+                var btn = cal.querySelector("#nextMonth");
+
+                cal.addEventListener("date-change", function(evt) {
+                    var today = moment();
+                    assert.equal(evt.detail, today.add(1,'M').format("YYYY-MM-DD"));
+                    done();
+                });
+
+                btn.dispatchEvent(evt);
+            });
+
+            it('select year', function(done) {
+                var evt = new MouseEvent("click", { button: 0 });
+                var btn = cal.querySelector(".dateTitle");
+                var yearList = cal.querySelector(".years");
+
+                btn.addEventListener('click', function(evt) {
+                    //debugger;
+                    var today = moment();
+                    var yearDiv = yearList.querySelector('[data-year="'+today.year()+'"]');
+                    assert.isTrue(isVisible(yearDiv));
+                    assert.isTrue(yearDiv.classList.contains('select'));
+                    var newYearDiv = yearList.querySelector('[data-year="'+(today.year()-3)+'"]');
+                    var evt2 = new MouseEvent("click", { button: 0 });
+
+                    var event1 = new Promise( function(resolve, reject) {
+                            cal.addEventListener("date-change", function(evt) {
+                                var today = moment();
+                                assert.equal(evt.detail, today.add(-3,'Y').format("YYYY-MM-DD"));
+                                resolve( );
+                            });
+                        });
+
+                    var event2 = new Promise( function(resolve, reject) {
+                            newYearDiv.addEventListener("click", function(evt) {
+                                assert.isFalse(yearDiv.classList.contains('select'));
+                                assert.isTrue(newYearDiv.classList.contains('select'));
+                                resolve( );
+                            });
+                        });
+
+                    Promise.all([event1, event2])
+                        .then( function(res) { done(); });
+
+                    newYearDiv.dispatchEvent(evt2);
+                });
+
+                btn.dispatchEvent(evt);
+            })
+        });
+
+        describe('select date', function() {
+            var cal;
+            beforeEach( function(done) {
+                moment.locale("fr");
+                var today = moment();
+                cal = fixture('basic');
+                cal.i18n = "fr";
+                Polymer.dom.flush();
+                done();
+            })
+
+            it('select date', function(done) {
+                cal.initDate = '2015-10-01';
+                Polymer.dom.flush();
+
+                var day = cal.querySelector('.day[data-date="2015-10-22"]');
+                var evt = new MouseEvent("click", { button: 0 });
+
+                cal.addEventListener("change", function(evt) {
+                    var today = moment();
+                    assert.property(cal, "value");
+                    assert.equal(cal.getAttribute('value'),'2015-10-22');
+                    assert.equal(cal.value,'2015-10-22' );
+                    assert.typeOf(cal.getDate(), 'date');
+                    assert.isTrue(day.classList.contains('select'));
+                    done();
+                });
+
+                day.dispatchEvent(evt);
+            });
+
+            it('select a new date', function(done) {
+                cal.initDate = '2015-10-01';
+                Polymer.dom.flush();
+
+                cal.value = '2015-10-10';
+                var selDate = cal.querySelector('.day[data-date="2015-10-10"]')
+                assert.isTrue(selDate.classList.contains('select'));
+
+                var day = cal.querySelector('.day[data-date="2015-10-22"]');
+                var evt = new MouseEvent("click", { button: 0 });
+
+                cal.addEventListener("change", function(evt) {
+                    var today = moment();
+                    assert.property(cal, "value");
+                    assert.equal(cal.getAttribute('value'),'2015-10-22');
+                    assert.equal(cal.value,'2015-10-22' );
+                    assert.typeOf(cal.getDate(), 'date');
+                    assert.isTrue(day.classList.contains('select'));
+                    assert.isFalse(selDate.classList.contains('select'));
+                    done();
+                });
+
+                day.dispatchEvent(evt);
+            });
+
+            it('minDate', function(done) {
+                cal.initDate = '2015-10-01';
+                cal.minDate = '2015-10-15'
+                Polymer.dom.flush();
+
+                var day = cal.querySelector('.day[data-date="2015-10-10"]');
+                var evt = new MouseEvent("click", { button: 0 });
+                day.dispatchEvent(evt);
+                Polymer.dom.flush();
+
+                assert.isUndefined(cal.value);
+                assert.isNull(cal.getAttribute('value'));
+
+                done();
+            });
+
+            it('maxDate', function(done) {
+                cal.initDate = '2015-10-01';
+                cal.maxDate = '2015-10-15'
+                Polymer.dom.flush();
+
+                var day = cal.querySelector('.day[data-date="2015-10-20"]');
+                var evt = new MouseEvent("click", { button: 0 });
+                day.dispatchEvent(evt);
+                Polymer.dom.flush();
+
+                assert.isUndefined(cal.value);
+                assert.isNull(cal.getAttribute('value'));
+
+                done();
+            });
+        });
+    </script>
+
+</body>
+
+</html>
