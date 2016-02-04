@@ -5,12 +5,13 @@
 <link rel="import" href="../neon-animation/animations/scale-up-animation.html">
 <link rel="import" href="../neon-animation/animations/fade-out-animation.html">
 <link rel="import" href="icons.html">
+<link rel="import" href="theme.html">
 <script src="../moment/min/moment-with-locales.min.js" charset="utf-8"></script>
 
 <!--
 A calendar component, which could be used as date-picker
 
-version : __1.0.2__
+version : __1.0.3__
 
 Example:
 
@@ -38,41 +39,6 @@ Custom property             | Default                            | Description
 @group zdk Elements
 @demo
 -->
-
-<style is="custom-style">
-zdkelt-calendar {
-	--zdk-calendar-select: {
-		background: var(--accent-color);
-		color: var(--primary-background-color);
-	};
-	--zdk-calendar-week: {
-		background: var(--primary-background-color);
-		color:var(--primary-text-color);
-	};
-	--zdk-calendar-weekend: {
-		background: var(--light-primary-color);
-	};
-	--zdk-calendar-notinmonth: {
-		color:var(--disabled-text-color);
-	}
-	--zdk-calendar-title: {
-		background: var(--dark-primary-color);
-		color: var(--primary-background-color);
-		font-size:110%;
-	};
-	--zdk-calendar-today: {
-		background: var(--primary-color);
-		color:var(--primary-background-color);
-	};
-	--zdk-calendar-weekdays: {
-		background: var(--default-primary-color);
-		color:var(--primary-background-color);
-	};
-	--zdk-calendar-action: {
-		background:none;
-	};
-}
-</style>
 
 <dom-module id="zdkelt-calendar">
     <style>
