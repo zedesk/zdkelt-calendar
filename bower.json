@@ -1,6 +1,6 @@
 {
   "name": "zdkelt-calendar",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A date picker",
   "authors": [
     "zeDesk <dev@zedesk.net>"
@@ -16,16 +16,16 @@
   "main": "zdk-calendar.html",
   "repository": {
     "type": "git",
-    "url": "git://github.com/PolymerElements/paper-card.git"
+    "url": "git://github.com/zedesk/zdkelt-calendar.git"
   },
-  "license": "http://polymer.github.io/LICENSE.txt",
-  "homepage": "https://github.com/PolymerElements/paper-card",
+  "license": "https://github.com/zedesk/zdkElt-calendar/LICENCE",
+  "homepage": "http://zedesk.github.io/zdkelt-calendar",
   "ignore": [
     "/test/",
     "/demo/"
   ],
   "dependencies": {
-    "zdkelt-calendar": "zedesk/zdkelt-calendar#^1.0.0",
+    "zdkelt-calendar": "zedesk/zdkelt-calendar#^1.0.2",
     "iron-component-page": "PolymerElements/iron-component-page#^1.1.4",
     "test-fixture": "PolymerElements/test-fixture#^1.0.0",
     "web-component-tester": "web-component-tester#^4.0.0"

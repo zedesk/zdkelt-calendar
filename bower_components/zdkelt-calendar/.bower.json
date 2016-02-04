@@ -1,6 +1,6 @@
 {
   "name": "zdkelt-calendar",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A date picker",
   "authors": [
     "zeDesk <dev@zedesk.net>"
@@ -16,10 +16,10 @@
   "main": "zdk-calendar.html",
   "repository": {
     "type": "git",
-    "url": "git://github.com/PolymerElements/paper-card.git"
+    "url": "git://github.com/zedesk/zdkelt-calendar.git"
   },
-  "license": "http://polymer.github.io/LICENSE.txt",
-  "homepage": "https://github.com/PolymerElements/paper-card",
+  "license": "https://github.com/zedesk/zdkElt-calendar/LICENCE",
+  "homepage": "http://zedesk.github.io/zdkelt-calendar",
   "ignore": [
     "/test/",
     "/demo/"
@@ -28,9 +28,11 @@
     "polymer": "Polymer/polymer#^1.2.4",
     "paper-material": "PolymerElements/paper-material#^1.0.6",
     "iron-flex-layout": "PolymerElements/iron-flex-layout#^1.2.2",
-    "neon-animation": "PolymerElements/neon-animation#~1.1.0",
-    "moment": "momentjs#~2.10.6",
-    "iron-dropdown": "PolymerElements/iron-dropdown#^1.1.0"
+    "neon-animation": "PolymerElements/neon-animation#^1.1.0",
+    "iron-dropdown": "PolymerElements/iron-dropdown#^1.1.0",
+    "moment": "^2.11.1",
+    "paper-ripple": "PolymerElements/paper-ripple#^1.0.5",
+    "iron-icon": "PolymerElements/iron-icon#^1.0.7"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.1.4",
@@ -41,13 +43,13 @@
     "iron-flex-layout": "PolymerElements/iron-flex-layout#^1.2.2",
     "paper-styles": "PolymerElements/paper-styles#^1.1.3"
   },
-  "_release": "1.0.0",
+  "_release": "1.0.2",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.0",
-    "commit": "c2dd35716a83051e42a76d6b4a40fa2811c5b806"
+    "tag": "v1.0.2",
+    "commit": "a042a2cc436b623396decda27089f7d246925e00"
   },
   "_source": "git://github.com/zedesk/zdkelt-calendar.git",
-  "_target": "^1.0.0",
+  "_target": "^1.0.2",
   "_originalSource": "zedesk/zdkelt-calendar"
 }
