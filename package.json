@@ -1,32 +1,41 @@
 {
   "name": "zdkelt-calendar",
-  "version": "1.0.3",
+  "version": "2.0.0-preview",
   "description": "a calendar webcomponent",
   "main": "index.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "wct",
+    "test": "polymer test",
     "clean": "rm -rf bower-components",
     "postinstall": "bower install",
-    "start":"polyserve"
+    "start": "polymer serve -H 0.0.0.0",
+    "lint": "eslint . --ext js,html --ignore-path .gitignore"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/zedesk/zdkElt-calendar.git"
   },
   "author": "zedesk <dev@zedesk.net>",
-  "license": "https://github.com/zedesk/zdkElt-calendar/LICENCE",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/zedesk/zdkElt-calendar/issues"
   },
   "homepage": "https://github.com/zedesk/zdkElt-calendar#readme",
   "devDependencies": {
-    "bower": "^1.7.7",
+    "bower": "^1.8.2",
     "crisper": "^2.0.1",
+    "eslint": "^4.18.1",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-html": "^4.0.2",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-node": "^6.0.0",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1",
     "jscs": "^2.9.0",
     "polylint": "^2.9.0",
+    "polymer-cli": "^1.6.0",
     "polyserve": "^0.5.0",
     "web-component-tester": "^4.1.0"
   }
