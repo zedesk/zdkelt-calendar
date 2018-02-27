@@ -1,6 +1,7 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../paper-ripple/paper-ripple.html">
 <link rel="import" href="../iron-dropdown/iron-dropdown.html">
+<link rel="import" href="../iron-list/iron-list.html">
 <link rel="import" href="icons.html">
 <link rel="import" href="moment.html">
 <!-- <link rel="import" href="theme.html"> -->
@@ -34,8 +35,8 @@ Custom property             | Default                            | Description
 `--zdk-calendar-today`      | bg : `--primary-color`             | style of the today date
                             | text: `--primary-background-color` |
 
-@group zdk-elements
-@demo
+@group zdk Elements
+@demo demo/index.html
 -->
 
 <dom-module id="zdkelt-calendar">
@@ -112,7 +113,15 @@ Custom property             | Default                            | Description
         color: black;
       }
 
-      .years div.select,
+      .years {
+        background: white;
+        min-width: 150px;
+        height: 250px;
+        margin-top: 30px;
+        margin-left: -10px;
+      }
+
+      .years .select,
       .day.select>div,
       .day.select:hover>div {
         background: var(--accent-color);
@@ -170,7 +179,16 @@ Custom property             | Default                            | Description
         height: 180px;
         margin: 20px
       }
+      
+      .content {
+        display: flex;
+        height: 100%;
+      }
 
+      iron-list {
+        flex: 1;
+        background: lavender;
+      }
     </style>
 
     <div class="zdkCal">
@@ -205,15 +223,21 @@ Custom property             | Default                            | Description
         </div>
       </template>
 
-      <iron-dropdown id="showYears" class=" years" horizontal-align="right" vertical-align="top" entry-animation="scale-up-animation"
-        exit-animation="fade-out-animation" on-mouseout="_closeYears">
-        <div class="dropdown-content">
-          <template is="dom-repeat" items="[[_years]]" as="item">
-            <div data-year$="{{item}}" on-tap="_selectYear">
-              <span>{{item}}</span>
-              <paper-ripple></paper-ripple>
-            </div>
-          </template>
+      <iron-dropdown id="showYears" class="years" 
+        horizontal-align="right" 
+        vertical-align="top" 
+        entry-animation="scale-up-animation"
+        exit-animation="fade-out-animation"
+        on-mouseout="_closeYears">
+        <div slot="dropdown-content" class="content">
+          <iron-list items=[[_years]] id="yearList" selected-item="{{_year}}" selection-enabled>
+            <template>
+              <div data-year$="{{item}}" on-tap="_selectYear" class$=[[_yearSelected(selected,item)]]>
+                <span>{{item}}</span>
+                <paper-ripple></paper-ripple>
+              </div>
+            </template>
+          </iron-list>
         </div>
       </iron-dropdown>
     </div>
@@ -290,21 +314,21 @@ Custom property             | Default                            | Description
           },
 
           _weekDays: {
-            type: Array
+            type: Array,
           },
           _weeks: {
-            type: Array
+            type: Array,
           },
           _month: {
-            type: String
+            type: String,
           },
           _year: {
-            type: String
+            type: String,
           },
           _years: {
             type: Array,
             value: () => {
-              return [...Array(2000).keys()].map(x => x + 1900)
+              return [...Array(200).keys()].map(x => x + 1900)
             },
           },
         }
@@ -369,35 +393,33 @@ Custom property             | Default                            | Description
           return
         }
 
+        const selected = evt.currentTarget.parentNode.parentNode.querySelector('.select')
+        if (selected && selected !== evt.currentTarget) selected.classList.toggle('select')
+        evt.currentTarget.classList.toggle('select')
         if (this.value !== evt.model.item.dateStr) {
           this.value = evt.model.item.dateStr
-          this.fire('change', evt.model.item.date)
+          this.dispatchEvent(new CustomEvent('change', { detail: evt.model.item.date }))
         } else {
           this.value = null
-          this.fire('change', null)
+          this.dispatchEvent(new CustomEvent('change', { detail: null }))
         }
+      }
+      
+      _valueChanged(newValue) {
+        debugger
       }
 
       /**
        * show the year dropdown
        */
       _showYears(evt) {
-        const dlg = this.querySelector('#showYears')
-        let tmp = dlg.querySelector('.select') || null
-        if (tmp) {
-          tmp.classList.remove('select')
-        }
-        var todayYear = dlg.querySelector("div[data-year='" + moment(this._date).year() + "']")
-        todayYear.classList.add('select')
+        const dlg = this.$.showYears
 
-        var that = this
-        dlg.addEventListener('iron-overlay-opened', function () {
-          var scrollDate = moment(that._date).year() - 2
+        dlg.addEventListener('iron-overlay-opened', () => {
+          var scrollDate = moment(this._date).year() - 2
           if (scrollDate < 1900) scrollDate = 1900
-          dlg.querySelector("div[data-year='" + scrollDate + "']").scrollIntoView({
-            block: 'start',
-            behavior: 'smooth',
-          })
+          this.$.yearList.selectIndex(this._years.indexOf(this._year))
+          this.$.yearList.scrollToIndex(this._years.indexOf(scrollDate))
         })
         dlg.toggle()
       }
@@ -406,29 +428,29 @@ Custom property             | Default                            | Description
        * close the year dropdown when the mouse is out
        */
       _closeYears(evt) {
-        var rel = evt.relatedTarget
-        var dlg = this.querySelector('#showYears')
-        while (rel !== dlg && rel !== document.body) {
+        let rel = evt.relatedTarget
+        while (rel !== this.$.showYears && rel.parentNode) {
           rel = rel.parentNode
         }
-        if (rel === dlg) return
-        dlg.close()
+        if (rel === this.$.showYears) return
+        this.$.showYears.close()
+      }
+
+      _yearSelected(selected, item) {
+        return selected ? 'select' : ''
       }
 
       /**
        * get the new year from the select year in the dropdown menu
        */
       _selectYear(evt) {
-        var dlg = this.querySelector('#showYears')
-        var rel = evt.target
-        while (rel.tagName !== 'DIV') {
-          rel = rel.parentNode
+        this.$.yearList.selectIndex()
+        if (this._year !== evt.model.item) {
+          this._year = evt.model.item
+          this._date = moment(this._date).year(evt.model.item)
+          this._datechange()
         }
-        dlg.querySelector('.select').classList.remove('select')
-        rel.classList.add('select')
-        this._date = moment(this._date).year(rel.dataset['year'])
-        this._datechange()
-        dlg.close()
+        this.$.showYears.close()
       }
 
       /**
@@ -474,27 +496,7 @@ Custom property             | Default                            | Description
        * @param {Date} send the _date, formatted as "YYYY-MM-DD"
        */
       _datechange() {
-        this.fire('date-change', moment(this._date).format('YYYY-MM-DD'))
-      }
-
-      /**
-       * on value change, deselect the old date if exists, then
-       * highligted the selected date (value) using `--zdk-calendar-select`,
-       */
-      _valueChanged(newValue, oldValue) {
-        var sel
-        if (newValue === oldValue) {
-          return
-        }
-
-        if (oldValue) {
-          sel = this.querySelector('.select')
-          if (sel) sel.classList.toggle('select')
-        }
-        if (newValue) {
-          sel = this.querySelector('[data-date="' + newValue + '"]')
-          if (sel && !sel.classList.contains('select')) sel.classList.add('select')
-        }
+        this.dispatchEvent(new CustomEvent('date-change', { detail: moment(this._date).format('YYYY-MM-DD') }))
       }
 
       /**

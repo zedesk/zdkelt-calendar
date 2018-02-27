@@ -18,9 +18,47 @@
       <template>
         <style>
         </style>
-        <zdkelt-calendar id="cal"></zdkelt-calendar>
+        <zdkelt-calendar id="cal" i18n="fr" value="2018-02-15"></zdkelt-calendar>
+      <script>
+        const cal = document.getElementById('cal')
+        cal.addEventListener('change', (evt) => {
+          console.log(evt.target.value)
+          console.log(evt.detail)
+        })
+      </script>
       </template>
     </demo-snippet>
+
+    <demo-snippet>
+        <template>
+          <style>
+            zdkelt-calendar.small {
+              height: 240px;
+              width: 210px;
+              display: inline-block;
+            }
+          </style>
+          <zdkelt-calendar class="small" id="cal1" i18n="fr" initDate="2018-02-15"></zdkelt-calendar>
+          <zdkelt-calendar class="small" id="cal2" i18n="fr" initDate="2018-03-15"></zdkelt-calendar>
+        <script>
+          const cal1 = document.getElementById('cal1')
+          const cal2 = document.getElementById('cal2')
+          cal1.addEventListener('date-change', (evt) => {
+            cal2.initDate = moment(evt.detail).add(1, 'M').format()
+          }, false)
+          cal2.addEventListener('date-change', (evt) => {
+            cal1.initDate = moment(evt.detail).add(-1, 'M').format()
+          }, false)
+          cal1.addEventListener('change', (evt) => {
+            cal2.value = cal1.value
+          }, false)
+          cal2.addEventListener('change', (evt) => {
+            console.log(cal2.value, cal1.value)
+            cal1.value = cal2.value
+          }, false)
+        </script>
+        </template>
+      </demo-snippet>
   </div>
 </body>
 
