@@ -21,6 +21,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
 
   <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../iron-test-helpers/mock-interactions.js"></script>
   <script src="../../test-fixture/test-fixture-mocha.js"></script>
 
   <link rel="import" href="../../test-fixture/test-fixture.html">
@@ -52,16 +53,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     var today = moment()
 
     describe('initialize', function () {
-      beforeEach(function (done) {
+      beforeEach((done) => {
         moment.locale('fr')
         today = moment()
         cal = fixture('basic')
         cal.i18n = 'fr'
-        Polymer.dom.flush()
-        done()
+        flush(() => done())
       })
 
-      it('no value by default', function (done) {
+      it('no value by default', (done) => {
         assert.equal(cal.getAttribute('value'), null)
         assert.equal(cal.getAttribute('minDate'), null)
         assert.equal(cal.getAttribute('maxDate'), null)
@@ -69,282 +69,269 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         done()
       })
 
-      it('set init-date attribute', function (done) {
+      it('set init-date attribute', (done) => {
         cal.setAttribute('init-date', '2015-08-22')
-        Polymer.dom.flush()
-        assert.equal(cal.getAttribute('init-date'), '2015-08-22')
-        assert.equal(moment(cal.initDate).format('YYYY-MM-DD'), '2015-08-22')
-        done()
+        flush(() => {
+          assert.equal(cal.getAttribute('init-date'), '2015-08-22')
+          assert.equal(moment(cal.initDate).format('YYYY-MM-DD'), '2015-08-22')
+          done()
+        })
       })
 
-      it('set initDate property', function (done) {
+      it('set initDate property', (done) => {
         cal.initDate = '2015-08-22T00:00:00Z'
-        Polymer.dom.flush()
-        assert.equal(cal.getAttribute('init-date'), '2015-08-22')
-        assert.equal(moment(cal.initDate).format('YYYY-MM-DD'), '2015-08-22')
-        done()
+        flush(() => {
+          assert.equal(cal.getAttribute('init-date'), '2015-08-22')
+          assert.equal(moment(cal.initDate).format('YYYY-MM-DD'), '2015-08-22')
+          done()
+        })
       })
 
-      it('set initDate property (timezone)', function (done) {
+      it('set initDate property (timezone)', (done) => {
         cal.initDate = '2016-02-01T00:00:00+02:00'
-        Polymer.dom.flush()
-        assert.equal(cal.getAttribute('init-date'), '2016-02-01')
-        assert.equal(moment(cal.initDate).format('YYYY-MM-DD'), '2016-02-01')
-        done()
+        flush(() => {
+          assert.equal(cal.getAttribute('init-date'), '2016-02-01')
+          assert.equal(moment(cal.initDate).format('YYYY-MM-DD'), '2016-02-01')
+          done()
+        })
       })
 
-      it('set min-date attribute', function (done) {
+      it('set min-date attribute', (done) => {
         cal.initDate = '2015-08-01'
-        Polymer.dom.flush()
-
         cal.setAttribute('min-date', '2015-08-22')
-        Polymer.dom.flush()
-        assert.equal(cal.getAttribute('min-date'), '2015-08-22')
-        assert.equal(moment(cal.minDate).format('YYYY-MM-DD'), '2015-08-22')
-        done()
+        flush(() => {
+          assert.equal(cal.getAttribute('min-date'), '2015-08-22')
+          assert.equal(moment(cal.minDate).format('YYYY-MM-DD'), '2015-08-22')
+          done()
+        })
       })
 
-      it('set min-date property', function (done) {
+      it('set min-date property', (done) => {
         cal.initDate = '2015-08-01'
-        Polymer.dom.flush()
-
         cal.minDate = '2015-08-22'
-        Polymer.dom.flush()
-        assert.equal(cal.getAttribute('min-date'), '2015-08-22')
-        assert.equal(moment(cal.minDate).format('YYYY-MM-DD'), '2015-08-22')
-
-        var elts = [].slice.call(cal.querySelectorAll('*[data-date]'))
-        var promises = elts.map(function (div) {
-          if (div.dataset['date'] < cal.minDate) {
-            assert.isTrue(div.classList.contains('disabled'))
-          } else {
-            assert.isFalse(div.classList.contains('disabled'))
-          }
-        })
-        Promise.all(promises)
-          .then(function () {
-            done()
+        flush(() => {
+          assert.equal(cal.getAttribute('min-date'), '2015-08-22')
+          assert.equal(moment(cal.minDate).format('YYYY-MM-DD'), '2015-08-22')
+          const shadowRoot = cal.shadowRoot
+          const elts = [].slice.call(shadowRoot.querySelectorAll('*[data-date]'))
+          const promises = elts.map(function (div) {
+            if (div.dataset['date'] < cal.minDate) {
+              assert.isTrue(div.classList.contains('disabled'))
+            } else {
+              assert.isFalse(div.classList.contains('disabled'))
+            }
           })
+          Promise.all(promises)
+            .then(function () {
+              done()
+            })
+        })
       })
 
-      it('set max-date attribute', function (done) {
+      it('set max-date attribute', (done) => {
         cal.initDate = '2015-08-01'
-        Polymer.dom.flush()
-
         cal.setAttribute('max-date', '2015-08-22')
-        Polymer.dom.flush()
-        assert.equal(cal.getAttribute('max-date'), '2015-08-22')
-        assert.equal(moment(cal.maxDate).format('YYYY-MM-DD'), '2015-08-22')
-        done()
+        flush(() => {
+          assert.equal(cal.getAttribute('max-date'), '2015-08-22')
+          assert.equal(moment(cal.maxDate).format('YYYY-MM-DD'), '2015-08-22')
+          done()
+        })
       })
 
-      it('set maxDate property', function (done) {
+      it('set maxDate property', (done) => {
         cal.initDate = '2015-08-01'
-        Polymer.dom.flush()
-
         cal.maxDate = '2015-08-22'
-        Polymer.dom.flush()
-        assert.equal(cal.getAttribute('max-date'), '2015-08-22')
-        assert.equal(moment(cal.maxDate).format('YYYY-MM-DD'), '2015-08-22')
-
-        var elts = [].slice.call(cal.querySelectorAll('*[data-date]'))
-        var promises = elts.map(function (div) {
-          if (div.dataset['date'] > cal.maxDate) {
-            assert.isTrue(div.classList.contains('disabled'))
-          } else {
-            assert.isFalse(div.classList.contains('disabled'))
-          }
-        })
-        Promise.all(promises)
-          .then(function () {
-            done()
+        flush(() => {
+          assert.equal(cal.getAttribute('max-date'), '2015-08-22')
+          assert.equal(moment(cal.maxDate).format('YYYY-MM-DD'), '2015-08-22')
+          const shadowRoot = cal.shadowRoot
+          const elts = [].slice.call(shadowRoot.querySelectorAll('*[data-date]'))
+          const promises = elts.map(function (div) {
+            if (div.dataset['date'] > cal.maxDate) {
+              assert.isTrue(div.classList.contains('disabled'))
+            } else {
+              assert.isFalse(div.classList.contains('disabled'))
+            }
           })
+          Promise.all(promises)
+            .then(function () {
+              done()
+            })
+        })
       })
     })
 
     describe('i18n', function () {
-      it('i18n french', function (done) {
+      let initDate = "2018-04-02"
+      beforeEach((done) => {
+        cal = fixture('basic')
+        cal.initDate = initDate
+        flush(() => done())
+      })
+
+      it('i18n french', (done) => {
         moment.locale('fr')
-        var cal = fixture('basic')
         cal.i18n = 'fr'
-        Polymer.dom.flush()
-        var spans = cal.querySelectorAll('.title .dateTitle > div > span')
-        assert.equal(spans[0].innerHTML, moment.monthsShort()[today.month()])
-        assert.equal(spans[1].innerHTML, today.year())
-        var divs = cal.querySelectorAll('.weekdays > div')
-        assert.equal(divs[0].textContent.trim(), 'Lu')
-        assert.equal(divs[1].textContent.trim(), 'Ma')
-        assert.equal(divs[2].textContent.trim(), 'Me')
-        assert.equal(divs[3].textContent.trim(), 'Je')
-        assert.equal(divs[4].textContent.trim(), 'Ve')
-        assert.equal(divs[5].textContent.trim(), 'Sa')
-        assert.equal(divs[6].textContent.trim(), 'Di')
-        done()
+        flush(() => {
+          const shadowRoot = cal.shadowRoot
+          const date = shadowRoot.querySelector('.title .dateTitle')
+          assert.equal(date.innerHTML, `avr. 2018`)
+          const divs = shadowRoot.querySelectorAll('.weekdays > div')
+          assert.equal(divs[0].textContent.trim().toLowerCase(), 'lu')
+          assert.equal(divs[1].textContent.trim().toLowerCase(), 'ma')
+          assert.equal(divs[2].textContent.trim().toLowerCase(), 'me')
+          assert.equal(divs[3].textContent.trim().toLowerCase(), 'je')
+          assert.equal(divs[4].textContent.trim().toLowerCase(), 've')
+          assert.equal(divs[5].textContent.trim().toLowerCase(), 'sa')
+          assert.equal(divs[6].textContent.trim().toLowerCase(), 'di')
+          done()
+        })
       })
 
-      it('i18n en', function (done) {
+      it('i18n en', (done) => {
         moment.locale('en')
-        var cal = fixture('basic')
         cal.i18n = 'en'
-        Polymer.dom.flush()
-        var spans = cal.querySelectorAll('.title .dateTitle > div > span')
-        assert.equal(spans[0].innerHTML, moment.monthsShort()[today.month()])
-        assert.equal(spans[1].innerHTML, today.year())
-        var divs = cal.querySelectorAll('.weekdays > div')
-        assert.equal(divs[0].textContent.trim(), 'Su')
-        assert.equal(divs[1].textContent.trim(), 'Mo')
-        assert.equal(divs[2].textContent.trim(), 'Tu')
-        assert.equal(divs[3].textContent.trim(), 'We')
-        assert.equal(divs[4].textContent.trim(), 'Th')
-        assert.equal(divs[5].textContent.trim(), 'Fr')
-        assert.equal(divs[6].textContent.trim(), 'Sa')
-        done()
+        flush(() => {
+          const shadowRoot = cal.shadowRoot
+          const date = shadowRoot.querySelector('.title .dateTitle')
+          assert.equal(date.innerHTML, `Apr 2018`)
+          const divs = shadowRoot.querySelectorAll('.weekdays > div')
+          assert.equal(divs[0].textContent.trim(), 'Su')
+          assert.equal(divs[1].textContent.trim(), 'Mo')
+          assert.equal(divs[2].textContent.trim(), 'Tu')
+          assert.equal(divs[3].textContent.trim(), 'We')
+          assert.equal(divs[4].textContent.trim(), 'Th')
+          assert.equal(divs[5].textContent.trim(), 'Fr')
+          assert.equal(divs[6].textContent.trim(), 'Sa')
+          done()
+        })
       })
 
-      it('i18n en-gb', function (done) {
+      it('i18n en-gb', (done) => {
         moment.locale('en-gb')
-        var cal = fixture('basic')
         cal.i18n = 'en-gb'
-        Polymer.dom.flush()
-        var spans = cal.querySelectorAll('.title .dateTitle > div > span')
-        assert.equal(spans[0].innerHTML, moment.monthsShort()[today.month()])
-        assert.equal(spans[1].innerHTML, today.year())
-        var divs = cal.querySelectorAll('.weekdays > div')
-        assert.equal(divs[0].textContent.trim(), 'Mo')
-        assert.equal(divs[1].textContent.trim(), 'Tu')
-        assert.equal(divs[2].textContent.trim(), 'We')
-        assert.equal(divs[3].textContent.trim(), 'Th')
-        assert.equal(divs[4].textContent.trim(), 'Fr')
-        assert.equal(divs[5].textContent.trim(), 'Sa')
-        assert.equal(divs[6].textContent.trim(), 'Su')
-        done()
+        flush(() => {
+          const shadowRoot = cal.shadowRoot
+          const date = shadowRoot.querySelector('.title .dateTitle')
+          assert.equal(date.innerHTML, `Apr 2018`)
+          const divs = shadowRoot.querySelectorAll('.weekdays > div')
+          assert.equal(divs[0].textContent.trim(), 'Mo')
+          assert.equal(divs[1].textContent.trim(), 'Tu')
+          assert.equal(divs[2].textContent.trim(), 'We')
+          assert.equal(divs[3].textContent.trim(), 'Th')
+          assert.equal(divs[4].textContent.trim(), 'Fr')
+          assert.equal(divs[5].textContent.trim(), 'Sa')
+          assert.equal(divs[6].textContent.trim(), 'Su')
+          done()
+        })
       })
     })
 
     describe('action buttons', function () {
       var cal, today
 
-      beforeEach(function (done) {
+      beforeEach((done) => {
         moment.locale('fr')
         today = moment()
         cal = fixture('basic')
         cal.i18n = 'fr'
-        Polymer.dom.flush()
-        done()
+        flush(() => done())
       })
 
-      it('previous month', function (done) {
-        var evt = new MouseEvent('click', { button: 0 })
-        var btn = cal.querySelector('#prevMonth')
-
+      it('previous month', (done) => {
         cal.addEventListener('date-change', function (evt) {
           assert.equal(evt.detail, today.add(-1, 'M').format('YYYY-MM-DD'))
           done()
         })
 
-        btn.dispatchEvent(evt)
+        const shadowRoot = cal.shadowRoot
+        const btn = shadowRoot.querySelector('#prevMonth')
+        MockInteractions.tap(btn)
       })
 
-      it('current month', function (done) {
-        var evt = new MouseEvent('click', { button: 0 })
-        var btn = cal.querySelector('#currentMonth')
-
+      it('current month', (done) => {
         cal.addEventListener('date-change', function (evt) {
           assert.equal(evt.detail, today.format('YYYY-MM-DD'))
           done()
         })
 
-        btn.dispatchEvent(evt)
+        const shadowRoot = cal.shadowRoot
+        const btn = shadowRoot.querySelector('#currentMonth')
+        MockInteractions.tap(btn)
       })
 
-      it('next month', function (done) {
-        var evt = new MouseEvent('click', { button: 0 })
-        var btn = cal.querySelector('#nextMonth')
-
+      it('next month', (done) => {
         cal.addEventListener('date-change', function (evt) {
           var today = moment()
           assert.equal(evt.detail, today.add(1, 'M').format('YYYY-MM-DD'))
           done()
         })
 
-        btn.dispatchEvent(evt)
+        const shadowRoot = cal.shadowRoot
+        const btn = shadowRoot.querySelector('#nextMonth')
+        MockInteractions.tap(btn)
       })
 
-      it('select year', function (done) {
-        var evt = new MouseEvent('click', { button: 0 })
-        var btn = cal.querySelector('.dateTitle')
-        var yearList = cal.querySelector('.years')
+      it('select year', (done) => {
+        const shadowRoot = cal.shadowRoot
+        const btn = shadowRoot.querySelector('.dateTitle')
 
-        btn.addEventListener('click', function (evt) {
-          // debugger;
-          var today = moment()
-          var yearDiv = yearList.querySelector('[data-year="' + today.year() + '"]')
-          assert.isTrue(isVisible(yearDiv))
-          assert.isTrue(yearDiv.classList.contains('select'))
-          var newYearDiv = yearList.querySelector('[data-year="' + (today.year() - 3) +
-            '"]')
-          var evt2 = new MouseEvent('click', { button: 0 })
+        btn.addEventListener('click', (evt) => {
+          // wait the droplist to render 
+          setTimeout(() => {
+            const shadowRoot = cal.shadowRoot
+            const today = moment()
+            const yearDiv = cal.$.showYears.querySelector('[data-year="' + today.year() + '"]')
+            assert.isTrue(isVisible(cal.$.showYears))
+            assert.isTrue(yearDiv.classList.contains('select'))
+            var newYearDiv = cal.$.showYears.querySelector(`[data-year="${ (today.year() - 2)}"]`)
 
-          var event1 = new Promise(function (resolve, reject) {
             cal.addEventListener('date-change', function (evt) {
               var today = moment()
-              assert.equal(evt.detail, today.add(-3, 'Y').format(
-                'YYYY-MM-DD'))
-              resolve()
-            })
-          })
-
-          var event2 = new Promise(function (resolve, reject) {
-            newYearDiv.addEventListener('click', function (evt) {
-              assert.isFalse(yearDiv.classList.contains('select'))
-              assert.isTrue(newYearDiv.classList.contains(
-                'select'))
-              resolve()
-            })
-          })
-
-          Promise.all([event1, event2])
-            .then(function (res) {
-              done()
+              assert.equal(evt.detail, today.add(-2, 'Y').format('YYYY-MM-DD'))
+              flush(() => {
+                assert.isFalse(yearDiv.classList.contains('select'))
+                assert.isTrue(newYearDiv.classList.contains('select'))
+                done()
+              })
             })
 
-          newYearDiv.dispatchEvent(evt2)
+            MockInteractions.tap(newYearDiv)
+          }, 0)
         })
 
-        btn.dispatchEvent(evt)
+        MockInteractions.tap(btn)
       })
     })
 
-    describe('select date', function () {
+    describe.only('select date', function () {
       var cal
-      beforeEach(function (done) {
+      beforeEach((done) => {
         moment.locale('fr')
         cal = fixture('basic')
         cal.i18n = 'fr'
-        Polymer.dom.flush()
-        done()
+        flush(() => { done() })
       })
 
-      it('select date', function (done) {
+      it('select date', (done) => {
         cal.initDate = '2015-10-01'
-        Polymer.dom.flush()
+        flush(() => {
+          const day = cal.$.zdkCal.querySelector('.day[data-date="2015-10-22"]')
 
-        var day = cal.querySelector('.day[data-date="2015-10-22"]')
-        var evt = new MouseEvent('click', { button: 0 })
+          cal.addEventListener('change', function (evt) {
+            assert.property(cal, 'value')
+            assert.equal(cal.getAttribute('value'), '2015-10-22')
+            assert.equal(cal.value, '2015-10-22')
+            assert.typeOf(cal.getDate(), 'date')
+            assert.isTrue(day.classList.contains('select'))
+            done()
+          })
 
-        cal.addEventListener('change', function (evt) {
-          assert.property(cal, 'value')
-          assert.equal(cal.getAttribute('value'), '2015-10-22')
-          assert.equal(cal.value, '2015-10-22')
-          assert.typeOf(cal.getDate(), 'date')
-          assert.isTrue(day.classList.contains('select'))
-          done()
+          MockInteractions.tap(day)
         })
-
-        day.dispatchEvent(evt)
       })
 
-      it('select a new date', function (done) {
+      it.only('select a new date', (done) => {
         cal.initDate = '2015-10-01'
         Polymer.dom.flush()
 
@@ -368,7 +355,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         day.dispatchEvent(evt)
       })
 
-      it('minDate', function (done) {
+      it('minDate', (done) => {
         cal.initDate = '2015-10-01'
         cal.minDate = '2015-10-15'
         Polymer.dom.flush()
@@ -384,7 +371,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         done()
       })
 
-      it('maxDate', function (done) {
+      it('maxDate', (done) => {
         cal.initDate = '2015-10-01'
         cal.maxDate = '2015-10-15'
         Polymer.dom.flush()
