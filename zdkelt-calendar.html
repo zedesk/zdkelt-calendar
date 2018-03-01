@@ -63,13 +63,13 @@ Custom property             | Default                            | Description
         width: 100%;
         display: flex;
         flex: 1;
-        background: var(--primary-background-color);
-        color: var(--primary-text-color);
+        background: var(--primary-background-color, white);
+        color: var(--primary-text-color, #212121);
       }
 
       .weekdays {
-        background: var(--default-primary-color);
-        color: var(--primary-background-color);
+        background: var(--default-primary-color, #3f51b5);
+        color: var(--primary-background-color, white);
       }
 
       .day {
@@ -83,16 +83,16 @@ Custom property             | Default                            | Description
       }
 
       .we {
-        background: var(--light-primary-color);
+        background: var(--light-primary-color, #c5cae9);
       }
 
       .nm {
-        color: var(--disabled-text-color);
+        color: var(--disabled-text-color, #9b9b9b);
       }
 
       .today > div {
-        background: var(--primary-color);
-        color: var(--primary-background-color);
+        background: var(--primary-color, #3f51b5);
+        color: var(--primary-background-color, white);
       }
 
       .disabled {
@@ -124,18 +124,19 @@ Custom property             | Default                            | Description
       .years .select,
       .day.select>div,
       .day.select:hover>div {
-        background: var(--accent-color);
-        color: var(--primary-background-color);
+        background: var(--accent-color, #ff4081);
+        color: var(--primary-background-color, white);
       }
 
       .action {
         position: relative;
         margin: 2px 1px;
         border-radius: 100%;
+        display: flex;
+        flex: 1;
+        align-items: center;
+        justify-content: center;
         @apply --zdk-calendar-action;
-        @apply --layout-flex;
-        @apply --layout-vertical;
-        @apply --layout-center;
       }
 
       .action iron-icon {
@@ -162,12 +163,12 @@ Custom property             | Default                            | Description
       }
 
       .title {
-        background: var(--dark-primary-color);
-        color: var(--primary-background-color);
-        /* display: flex; */
+        background: var(--dark-primary-color, #303f9f);
+        color: var(--primary-background-color, white);
+        display: flex;
+        flex-direction: row;
+        flex: 1;
         @apply --zdk-calendar-title;
-        @apply --layout-flex;
-        @apply --layout-horizontal;
       }
 
       .dropdown-content {
@@ -187,7 +188,7 @@ Custom property             | Default                            | Description
 
       iron-list {
         flex: 1;
-        background: lavender;
+        background: var(--primary-background-color, white);
       }
     </style>
 
@@ -404,11 +405,11 @@ Custom property             | Default                            | Description
           this.dispatchEvent(new CustomEvent('change', { detail: null }))
         }
       }
-      
+
       _valueChanged(newValue) {
         const selected = this.$.zdkCal.querySelector('.select')
         if (selected) {
-          if (selected.dataset.date === newValue) { 
+          if (selected.dataset.date === newValue) {
             return
           } else {
             selected.classList.toggle('select')
@@ -416,6 +417,7 @@ Custom property             | Default                            | Description
         }
         const newSelect = this.$.zdkCal.querySelector(`[data-date='${newValue}']`)
         if (newSelect) newSelect.classList.toggle('select')
+        this._populate()
       }
 
       /**
