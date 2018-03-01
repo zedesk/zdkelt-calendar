@@ -26,6 +26,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <link rel="import" href="../../test-fixture/test-fixture.html">
   <link rel="import" href="../../moment/min/moment-with-locales.min.js">
+  <!-- <link rel="import" href="../../paper-styles/default-theme.html"> -->
   <link rel="import" href="../zdkelt-calendar.html">
 
 </head>
@@ -34,8 +35,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <test-fixture id="basic">
     <template>
-      <zdkelt-calendar>
-        <zdkelt-calendar>
+      <zdkelt-calendar><zdkelt-calendar>
     </template>
   </test-fixture>
 
@@ -50,7 +50,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
 
     var cal
-    var today = moment()
 
     describe('initialize', function () {
       beforeEach((done) => {
@@ -162,7 +161,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     })
 
     describe('i18n', function () {
-      let initDate = "2018-04-02"
+      let initDate = '2018-04-02'
       beforeEach((done) => {
         cal = fixture('basic')
         cal.initDate = initDate
@@ -277,14 +276,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         const btn = shadowRoot.querySelector('.dateTitle')
 
         btn.addEventListener('click', (evt) => {
-          // wait the droplist to render 
+          // wait the droplist to render
           setTimeout(() => {
-            const shadowRoot = cal.shadowRoot
             const today = moment()
             const yearDiv = cal.$.showYears.querySelector('[data-year="' + today.year() + '"]')
             assert.isTrue(isVisible(cal.$.showYears))
             assert.isTrue(yearDiv.classList.contains('select'))
-            var newYearDiv = cal.$.showYears.querySelector(`[data-year="${ (today.year() - 2)}"]`)
+            var newYearDiv = cal.$.showYears.querySelector(`[data-year="${(today.year() - 2)}"]`)
 
             cal.addEventListener('date-change', function (evt) {
               var today = moment()
@@ -331,44 +329,43 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         })
       })
 
-      it.only('select a new date', (done) => {
+      it('select a new date', (done) => {
         cal.initDate = '2015-10-01'
-        Polymer.dom.flush()
-
         cal.value = '2015-10-10'
-        var selDate = cal.querySelector('.day[data-date="2015-10-10"]')
-        assert.isTrue(selDate.classList.contains('select'))
 
-        var day = cal.querySelector('.day[data-date="2015-10-22"]')
-        var evt = new MouseEvent('click', { button: 0 })
+        flush(() => {
+          const selDate = cal.$.zdkCal.querySelector('.day[data-date="2015-10-10"]')
+          assert.isTrue(selDate.classList.contains('select'))
 
-        cal.addEventListener('change', function (evt) {
-          assert.property(cal, 'value')
-          assert.equal(cal.getAttribute('value'), '2015-10-22')
-          assert.equal(cal.value, '2015-10-22')
-          assert.typeOf(cal.getDate(), 'date')
-          assert.isTrue(day.classList.contains('select'))
-          assert.isFalse(selDate.classList.contains('select'))
-          done()
+          const day = cal.$.zdkCal.querySelector('.day[data-date="2015-10-22"]')
+
+          cal.addEventListener('change', (evt) => {
+            assert.property(cal, 'value')
+            assert.equal(cal.getAttribute('value'), '2015-10-22')
+            assert.equal(cal.value, '2015-10-22')
+            assert.typeOf(cal.getDate(), 'date')
+            assert.isTrue(day.classList.contains('select'))
+            assert.isFalse(selDate.classList.contains('select'))
+            done()
+          })
+
+          MockInteractions.tap(day)
         })
-
-        day.dispatchEvent(evt)
       })
 
-      it('minDate', (done) => {
+      it.only('minDate', (done) => {
         cal.initDate = '2015-10-01'
         cal.minDate = '2015-10-15'
-        Polymer.dom.flush()
+        
+        flush(() => {
+          const day = cal.$.zdkCal.querySelector('.day[data-date="2015-10-10"]')
+          MockInteractions.tap(day)
+          // todo not good
+          assert.isUndefined(cal.value)
+          assert.isNull(cal.getAttribute('value'))
 
-        var day = cal.querySelector('.day[data-date="2015-10-10"]')
-        var evt = new MouseEvent('click', { button: 0 })
-        day.dispatchEvent(evt)
-        Polymer.dom.flush()
-
-        assert.isUndefined(cal.value)
-        assert.isNull(cal.getAttribute('value'))
-
-        done()
+          done()
+        })
       })
 
       it('maxDate', (done) => {
