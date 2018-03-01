@@ -406,7 +406,16 @@ Custom property             | Default                            | Description
       }
       
       _valueChanged(newValue) {
-        debugger
+        const selected = this.$.zdkCal.querySelector('.select')
+        if (selected) {
+          if (selected.dataset.date === newValue) { 
+            return
+          } else {
+            selected.classList.toggle('select')
+          }
+        }
+        const newSelect = this.$.zdkCal.querySelector(`[data-date='${newValue}']`)
+        if (newSelect) newSelect.classList.toggle('select')
       }
 
       /**
