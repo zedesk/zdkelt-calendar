@@ -1,6 +1,6 @@
 {
   "name": "zdkelt-calendar",
-  "version": "2.0.0-preview",
+  "version": "2.0.0",
   "description": "A date picker",
   "authors": [
     "zeDesk <dev@zedesk.net>"
@@ -26,11 +26,9 @@
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#^2.5.0",
-    "paper-material": "PolymerElements/paper-material#^2.1.0",
     "moment": "^2.20.1",
     "iron-dropdown": "PolymerElements/iron-dropdown#^2.2.0",
     "paper-ripple": "PolymerElements/paper-ripple#^2.0.1",
-    "iron-flex-layout": "PolymerElements/iron-flex-layout#^2.0.3",
     "iron-icon": "PolymerElements/iron-icon#^2.1.0",
     "iron-list": "PolymerElements/iron-list#^2.0.12"
   },

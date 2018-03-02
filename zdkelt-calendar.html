@@ -4,13 +4,11 @@
 <link rel="import" href="../iron-list/iron-list.html">
 <link rel="import" href="icons.html">
 <link rel="import" href="moment.html">
-<!-- <link rel="import" href="theme.html"> -->
-
 
 <!--
 A calendar component, which could be used as date-picker
 
-version : __2.0.0-preview__ (Polymer 2.x)
+version : __2.0.0__ (Polymer 2.x)
 
 Example:
 
@@ -34,7 +32,6 @@ Custom property             | Default  | Description
                             |          | background color of the hover day
 
 
-@group zdk Elements
 @demo demo/index.html
 -->
 
@@ -227,6 +224,10 @@ Custom property             | Default  | Description
   </template>
 
   <script type="text/javascript">
+    /**
+     * @customElement
+     * @polymer
+     */
     class ZdkEltCalendar extends Polymer.Element {
       static get is() {
         return 'zdkelt-calendar'
