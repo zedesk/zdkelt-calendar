@@ -354,7 +354,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       it('minDate', (done) => {
         cal.initDate = '2015-10-01'
         cal.minDate = '2015-10-15'
-        
+
         flush(() => {
           const day = cal.$.zdkCal.querySelector('.day[data-date="2015-10-10"]')
           cal.addEventListener('change', (evt) => {
