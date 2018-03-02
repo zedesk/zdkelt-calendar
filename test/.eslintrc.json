@@ -1,0 +1,9 @@
+{
+  "globals": {
+    "flush": true,
+    "WCT": true,
+    "fixture": true,
+    "assert": true,
+    "MockInteractions": true 
+  }
+}

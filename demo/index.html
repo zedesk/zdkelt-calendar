@@ -1,79 +1,68 @@
-<!DOCTYPE html>
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <title>zdk-Calendar demo page</title>
+  <title>tsante-tiler demo</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
 
-    <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
-    <link rel="import" href="../../paper-styles/paper-styles.html">
-    <link rel="import" href="../zdkelt-calendar.html">
-    <link rel="import" href="theme.html">
-    <link rel="stylesheet" href="demo.css" charset="utf-8">
+  <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../zdkelt-calendar.html">
 </head>
 
 <body>
+  <div class="vertical-section-container centered">
+    <demo-snippet>
+      <template>
+        <style>
+        </style>
+        <zdkelt-calendar id="cal" i18n="fr" value="2018-03-15"></zdkelt-calendar>
+      <script>
+        const cal = document.getElementById('cal')
+        cal.addEventListener('change', (evt) => {
+          console.log(evt.target.value)
+          console.log(evt.detail)
+        })
+      </script>
+      </template>
+    </demo-snippet>
 
-    <h3>The default component</h3>
+    <demo-snippet>
+        <template>
+          <style>
+            zdkelt-calendar.small {
+              height: 240px;
+              width: 210px;
+              display: inline-block;
+            }
+          </style>
+          <zdkelt-calendar class="small" id="cal1" i18n="en-US" init-date="2018-02-15"></zdkelt-calendar>
+          <zdkelt-calendar class="small" id="cal2" i18n="en-US" init-date="2018-03-15"></zdkelt-calendar>
+        <script>
+          window.addEventListener('WebComponentsReady', () => {
+            const cal1 = document.getElementById('cal1')
+            const cal2 = document.getElementById('cal2')
+            cal1.addEventListener('date-change', (evt) => {
+              cal2.initDate = moment(evt.detail).add(1, 'M').format()
+            }, false)
+            cal2.addEventListener('date-change', (evt) => {
+              cal1.initDate = moment(evt.detail).add(-1, 'M').format()
+            }, false)
+            cal1.addEventListener('change', (evt) => {
+              console.log(`cal1 : ${cal1.value}, cal2 : ${cal2.value}`)
+              cal2.value = cal1.value
+            }, false)
+            cal2.addEventListener('change', (evt) => {
+              console.log(cal2.value, cal1.value)
+              cal1.value = cal2.value
+            }, false)
 
-    <div class="layout horizontal">
-        <div class="cell">
-            <zdkelt-calendar id="cal"></zdkelt-calendar>
-        </div>
-        <div class="cell">
-            <div>
-                <label>selected value :</label>
-                <span class="value"></span>
-            </div>
-            <div>
-                <label for="init-date">initial Date</label>
-                <input type="text" name="init-date" value="" onchange="calApply(this)">
-            </div>
-            <div>
-                <label for="i18n">i18n</label>
-                <input type="text" name="i18n" value="" onchange="calApply(this)">
-                <br/>to get locale code refer to : <a href="http://www.science.co.il/Language/Locale-codes.asp">Locale Codes</a>
-            </div>
-            <div>
-                <label for="min-date">minimum date</label>
-                <input type="text" name="min-date" value="" onchange="calApply(this)">
-            </div>
-            <div>
-                <label for="max-date">maximum date</label>
-                <input type="text" name="max-date" value="" onchange="calApply(this)">
-            </div>
-        </div>
-    </div>
-    <script type="text/javascript">
-        var cal = document.querySelector("#cal");
-        cal.addEventListener("change", function(evt) {
-            console.log(evt);
-            document.querySelector(".value").innerHTML = cal.value;
-        });
-
-        function calApply(elt) {
-            cal.setAttribute(elt.name, elt.value);
-        }
-    </script>
-
-    <h3>A stylished component</h3>
-    <zdkelt-calendar class="demo" id="demo"></zdkelt-calendar>
-
-    <h3>Example of linked calendars</h3>
-    <div>
-        <zdkelt-calendar id="cal1" class="demo linked"></zdkelt-calendar>
-        <zdkelt-calendar id="cal2" class="demo linked"></zdkelt-calendar>
-    </div>
-    <script type="text/javascript">
-        var cal1 = document.querySelector('#cal1');
-        var cal2 = document.querySelector('#cal2');
-        cal2.initDate = moment(cal1.initDate).add(1,'M').format()
-
-        cal1.addEventListener("date-change", function(evt) { cal2.initDate = moment(evt.detail).add(1,'M').format() }, false);
-        cal2.addEventListener("date-change", function(evt) { cal1.initDate = moment(evt.detail).add(-1,'M').format() }, false);
-        cal1.addEventListener("change", function(evt) { cal2.value = cal1.value }, false );
-        cal2.addEventListener("change", function(evt) { console.log(evt); cal1.value = cal2.value }, false );
-    </script>
+            cal1.value = '2018-02-28'
+          })
+        </script>
+        </template>
+      </demo-snippet>
+  </div>
 </body>
 
-</html>
