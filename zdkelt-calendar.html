@@ -136,7 +136,6 @@ Custom property             | Default                            | Description
         flex: 1;
         align-items: center;
         justify-content: center;
-        @apply --zdk-calendar-action;
       }
 
       .action iron-icon {
@@ -168,7 +167,6 @@ Custom property             | Default                            | Description
         display: flex;
         flex-direction: row;
         flex: 1;
-        @apply --zdk-calendar-title;
       }
 
       .dropdown-content {
@@ -416,7 +414,10 @@ Custom property             | Default                            | Description
           }
         }
         const newSelect = this.$.zdkCal.querySelector(`[data-date='${newValue}']`)
-        if (newSelect) newSelect.classList.toggle('select')
+        if (newSelect) {
+          newSelect.classList.toggle('select')
+          this.dispatchEvent(new CustomEvent('change', { detail: newValue }))
+        }
         this._populate()
       }
 
