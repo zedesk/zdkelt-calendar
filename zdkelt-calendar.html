@@ -311,7 +311,8 @@ Custom property             | Default  | Description
           _years: {
             type: Array,
             value: () => {
-              return [...Array(200).keys()].map(x => x + 1900)
+              const offset = parseInt(moment().year() / 10, 10) * 10 - 120
+              return [...Array(240).keys()].map(x => x + offset)
             },
           },
         }
