@@ -20,7 +20,7 @@ to install it in tout project
 
     npm install zdkelt-calendar --save
 
-The component is based on Polymer v1.1.0
+The component is based on Polymer v2.5.0
 
 
 

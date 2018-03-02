@@ -3,15 +3,16 @@
 
 <head>
     <meta charset="utf-8">
-    <script src="../../webcomponentsjs/webcomponents.min.js"></script>
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
 </head>
 
 <body>
     <script>
         WCT.loadSuites([
-            'zdkelt-calendar.html'
-        ]);
+          'zdkelt-calendar.html?dom=shadow',
+          'zdkelt-calendar.html?wc-shadydom=true',
+        ])
     </script>
 
 </body>
