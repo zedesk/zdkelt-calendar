@@ -8,7 +8,7 @@
 <!--
 A calendar component, which could be used as date-picker
 
-version : __2.0.0__ (Polymer 2.x)
+version : __2.0.1__ (Polymer 2.x)
 
 Example:
 
@@ -24,12 +24,33 @@ Custom property             | Default  | Description
 ----------------------------|----------|---------------------------------------------
 --accent-color              | #ff4081  | background color of the selected day (value) and selected year
 --primary-background-color  | white    | background color of a day and year list
-                            |          | color of the headers bar and current day 
+                            |          | color of the headers bar and current day
 --primary-text-color        | #212121  | color of days and years
 --dark-primary-color        | #303f9f  | background color of the headers bar and the current day
 --light-primary-color       | #c5cae9  | background color of a weekend day
 --disabled-text-color       | #9b9b9b  | color of a day not in the current month
                             |          | background color of the hover day
+@apply
+| Mixins                        | Selector              | Value |
+| ----------------------------- | --------------------- | ----- |
+| --zdkCal-container            | .zdkCal               | {}    |
+| --zdkCal-week                 | .week                 | {}    |
+| --zdkCal-weekdays             | .weekdays             | {}    |
+| --zdkCal-day                  | .day                  | {}    |
+| --zdkCal-we                   | .we                   | {}    |
+| --zdkCal-nm                   | .nm                   | {}    |
+| --zdkCal-today-div            | .today > div          | {}    |
+| --zdkCal-disabled             | .disabled             | {}    |
+| --zdkCal-day-div              | .day > div            | {}    |
+| --zdkCal-day-hover-div        | .day:hover>div        | {}    |
+| --zdkCal-years                | .years                | {}    |
+| --zdkCal-action               | .action               | {}    |
+| --zdkCal-action-icon          | .action iron-icon     | {}    |
+| --zdkCal-years-div            | .years div            | {}    |
+| --zdkCal-date-title           | .dateTitle            | {}    |
+| --zdkCal-title                | .title                | {}    |
+| --zdkCal-content              | .content              | {}    |
+| --zdkCal-list                 | iron-list             | {}    |
 
 
 @demo demo/index.html
@@ -53,6 +74,7 @@ Custom property             | Default  | Description
         height: 100%;
         display: flex;
         flex-direction: column;
+        @apply --zdkCal-container;
       }
 
       .week {
@@ -61,11 +83,13 @@ Custom property             | Default  | Description
         flex: 1;
         background: var(--primary-background-color, white);
         color: var(--primary-text-color, #212121);
+        @apply --zdkCal-week;
       }
 
       .weekdays {
         background: var(--dark-primary-color, #303f9f);
         color: var(--primary-background-color, white);
+        @apply --zdkCal-weekdays;
       }
 
       .day {
@@ -76,23 +100,28 @@ Custom property             | Default  | Description
         align-items: center;
         justify-content: center;
         flex: 1;
+        @apply --zdkCal-day;
       }
 
       .we {
         background: var(--light-primary-color, #c5cae9);
+        @apply --zdkCal-we;
       }
 
       .nm {
         color: var(--disabled-text-color, #9b9b9b);
+        @apply --zdkCal-nm;
       }
 
       .today > div {
         background: var(--dark-primary-color, #303f9f);
         color: var(--primary-background-color, white);
+        @apply --zdkCal-today-div;
       }
 
       .disabled {
         background: lightgray;
+        @apply --zdkCal-disabled;
       }
 
       .day > div {
@@ -102,11 +131,13 @@ Custom property             | Default  | Description
         justify-content: center;
         border-radius: 100%;
         width: 100%;
+        @apply --zdkCal-day-div;
       }
 
       .day:hover>div {
         background: var(--disabled-text-color, #9b9b9b);
         color: var(--primary-text-color, #212121);
+        @apply --zdkCal-day-hover-div;
       }
 
       .years {
@@ -114,6 +145,7 @@ Custom property             | Default  | Description
         height: 250px;
         margin-top: 30px;
         margin-left: -10px;
+        @apply --zdkCal-years;
       }
 
       .years .select,
@@ -131,11 +163,13 @@ Custom property             | Default  | Description
         flex: 1;
         align-items: center;
         justify-content: center;
+        @apply --zdkCal-action;
       }
 
       .action iron-icon {
         width: 50%;
         height: 50%;
+        @apply --zdkCal-action-icon;
       }
 
       .years div {
@@ -143,6 +177,7 @@ Custom property             | Default  | Description
         font-size: 20px;
         text-align: center;
         color: var(--primary-text-color, #212121);
+        @apply --zdkCal-years-div
       }
 
       .dateTitle {
@@ -151,6 +186,7 @@ Custom property             | Default  | Description
         justify-content: center;
         font-weight: bold;
         flex: 5;
+        @apply --zdkCal-date-title;
       }
 
       .title {
@@ -159,16 +195,19 @@ Custom property             | Default  | Description
         display: flex;
         flex-direction: row;
         flex: 1;
+        @apply --zdkCal-title;
       }
-      
+
       .content {
         display: flex;
         height: 100%;
+        @apply --zdkCal-content;
       }
 
       iron-list {
         flex: 1;
         background: var(--primary-background-color, white);
+        @apply --zdkCal-list
       }
     </style>
 
